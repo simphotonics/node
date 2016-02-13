@@ -1,0 +1,32 @@
+{
+    "name": "simphotonics/dom",
+    "type": "library",
+    "description": "Create, edit, output XML nodes and documents.",
+    "keywords": ["dom", "ml", "markup", "node", "tree", "xhtml"],
+    "license": "MIT",
+    "homepage": "http://github.com/simphotonics/dom",
+    "support": {
+        "issues": "https://github.com/simphotonics/issues",
+        "source": "https://github.com/simphotonics/dom"
+    },
+    "authors": [
+        {
+            "name": "D Reschner",
+            "email": "git@simphotonics.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Simphotonics\\Dom\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "minimum-stability": "dev"
+}
