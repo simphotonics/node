@@ -25,6 +25,7 @@ class LeafTest extends \PHPUnit_Framework_TestCase
             'attr' => ['class' => 'main emph','id' => 'div1'],
             'cont' => 'This is a test!'
             ]);
+        die();
     }
 
     public function testSetKind()

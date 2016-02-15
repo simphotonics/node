@@ -18,9 +18,17 @@
     "require": {
         "php": ">=5.5.9"
     },
+    "require-dev": {
+        "phpunit": ">=5.2.5"
+    },
     "autoload": {
         "psr-4": {
             "Simphotonics\\Dom\\": "src/"
+        }
+    },
+    "autoload-dev":{
+        "psr-4": {
+            "Simphotonics\\Dom\\Tests\\": "tests/"
         }
     },
     "extra": {
