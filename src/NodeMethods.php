@@ -405,7 +405,7 @@ trait NodeMethods
      */
     public function tree()
     {
-        // Discriminate between CLI and APACHE
+        // Discriminate between CLI and HTML
         $blank = (PHP_SAPI == 'cli') ? "   " : " &nbsp &nbsp &nbsp";
         $newline = (PHP_SAPI == 'cli') ? "\n" : "<br/>";
         $out = $newline . $this->getID();
@@ -434,8 +434,11 @@ trait NodeMethods
         $normalOrder = $permutation;
         sort($normalOrder);
         if ($normalOrder !== array_keys($this->childNodes)) {
-            $message = 'Trying to permute nodes but no valid 
-            permutation given. Found: '.nl2br(print_r($permutation, true));
+            $message = 'Input array does not contain valid permutation. 
+            Found: '. print_r($permutation, true);
+            if (PHP_SAPI != 'cli') {
+                $message = str_replace("\n", '<br/>', $message);
+            }
             throw new \InvalidArgumentException($message);
         }
         $nodes = $this->childNodes;
