@@ -3,7 +3,6 @@
 namespace Simphotonics\Dom;
 
 use Simphotonics\Utils\ArrayUtils as ArrayUtils;
-use UnexpectedValueException;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -427,7 +426,7 @@ trait NodeMethods
      * @param  Array $permutation
      * @return void
      *
-     * @throws UnexpectedValueException
+     * @throws InvalidArgumentException
      */
     public function permute(array $permutation)
     {
@@ -437,7 +436,7 @@ trait NodeMethods
         if ($normalOrder !== array_keys($this->childNodes)) {
             $message = 'Trying to permute nodes but no valid 
             permutation given. Found: '.nl2br(print_r($permutation, true));
-            throw new UnexpectedValueException($message);
+            throw new \InvalidArgumentException($message);
         }
         $nodes = $this->childNodes;
         $this->childNodes = [];
