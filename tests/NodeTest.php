@@ -208,7 +208,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testPermuteException()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         self::$n->permute([0,2,1,6]);
     }
 
