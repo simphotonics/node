@@ -6,7 +6,7 @@
     "license": "MIT",
     "homepage": "http://github.com/simphotonics/dom",
     "support": {
-        "issues": "https://github.com/simphotonics/issues",
+        "issues": "https://github.com/simphotonics/dom/issues",
         "source": "https://github.com/simphotonics/dom"
     },
     "authors": [
@@ -16,7 +16,8 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9"
+        "php": ">=5.5.9",
+        "simphotonics/utils":">=1.0"
     },
     "require-dev": {
         "phpunit": ">=5.2.5"
