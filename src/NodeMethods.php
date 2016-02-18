@@ -2,9 +2,9 @@
 
 namespace Simphotonics\Dom;
 
-use Simphotonics\Utils\ArrayUtils as ArrayUtils;
-use RecursiveIteratorIterator as RecursiveIteratorIterator;
-use InvalidArgumentException as InvalidArgumentException;
+use Simphotonics\Utils\ArrayUtils;
+use RecursiveIteratorIterator;
+use InvalidArgumentException;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
