@@ -202,10 +202,7 @@ class NodeTest extends \PHPUnit_Framework_TestCase
             self::$n->getNodeByID(self::$n2->getID())
         );
     }
-
-    /**
-     *
-     */
+    
     public function testPermuteException()
     {
         $this->expectException(\InvalidArgumentException::class);
