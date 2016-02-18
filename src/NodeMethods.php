@@ -3,6 +3,8 @@
 namespace Simphotonics\Dom;
 
 use Simphotonics\Utils\ArrayUtils as ArrayUtils;
+use RecursiveIteratorIterator as RecursiveIteratorIterator;
+use InvalidArgumentException as InvalidArgumentException;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -13,13 +15,14 @@ use Simphotonics\Utils\ArrayUtils as ArrayUtils;
 trait NodeMethods
 {
     /**
-     * Constructs node object. Expected input is an array of the
-     * form $input = ['kind' => 'div','attr' => [attributes],
-     * 'cont' => 'text content','child' => Node];
-     * N.B. The input array is passed by reference!
-     *
-     * @param Array| $input
-     *
+     * Constructs node object.
+     * @param array| $input Array of the form:
+     *             $input = [
+     *               'kind' => 'div',
+     *               'attr' => [attributes],
+     *               'cont' => 'text content',
+     *               'child' => Node
+     *             ];
      */
     public function __construct(array $input = [])
     {
@@ -287,7 +290,7 @@ trait NodeMethods
         if (!$this->hasChildNodes()) {
             return $nodes;
         }
-        $childRIT = new \RecursiveIteratorIterator($this, $mode);
+        $childRIT = new RecursiveIteratorIterator($this, $mode);
         foreach ($childRIT as $childNode) {
             $nodes[] = $childNode;
         }
@@ -410,7 +413,7 @@ trait NodeMethods
         $newline = (PHP_SAPI == 'cli') ? "\n" : "<br/>";
         $out = $newline . $this->getID();
             // Create instance of RecursiveIteratorIterator with option SELF_FIRST.
-        $nodeRIT = new \RecursiveIteratorIterator($this, 1);
+        $nodeRIT = new RecursiveIteratorIterator($this, 1);
         foreach ($nodeRIT as $node) {
             $out .= str_repeat(
                 $blank,
@@ -426,7 +429,7 @@ trait NodeMethods
      * @param  Array $permutation
      * @return void
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function permute(array $permutation)
     {
@@ -439,7 +442,7 @@ trait NodeMethods
             if (PHP_SAPI != 'cli') {
                 $message = str_replace("\n", '<br/>', $message);
             }
-            throw new \InvalidArgumentException($message);
+            throw new InvalidArgumentException($message);
         }
         $nodes = $this->childNodes;
         $this->childNodes = [];
