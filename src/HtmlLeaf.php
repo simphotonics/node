@@ -15,7 +15,7 @@ use InvalidArgumentException;
  *              Notation:
  *              The element 'kind' denotes the element tag without the brackets.
  *              E.g.: <br/> => 'br', <span> </span> => 'span',
- *              The element 'type' refers to the formatting of the xhtml element.
+ *              The element 'format' refers to the formatting of the xhtml element.
  *              E.g.: <br/>                    => 'empty' (elements without content),
  *                    <span> ... </span>       => 'block' (element with content),
  *                    <!-- ... -->             => 'comment',
@@ -40,7 +40,7 @@ class HtmlLeaf extends Leaf
      * @var array of the form [element kind => renderMethod]
      */
     private static $elements = [
-        '!--' => 'renderDTD',
+        '!--' => 'renderComment',
         '!DOCTYPE' => 'renderDTD'
     ];
     /**
@@ -68,7 +68,7 @@ class HtmlLeaf extends Leaf
      * Initialise xml element types.
      * @return void
      */
-    public static function readElements($filename = 'elements.php')
+    public static function readElements(string $filename = 'elements.php')
     {
         FileUtils::assertFileReadable($filename);
         require($filename);
@@ -83,10 +83,10 @@ class HtmlLeaf extends Leaf
 
     /**
      * Registers new element kind. "renderFunc" has to be an existing class method.
-     * @param  array  $spec Array of the form: ['element kind' => 'element type', ...]
+     * @param  array  $spec Array of the form: ['element kind' => 'format', ...]
      * @return void
      */
-    public static function registerElements($elements = ['br'=>'empty'])
+    public static function registerElements(array $elements = ['br'=>'empty'])
     {
         foreach ($elements as $kind => $type) {
             if (isset(self::$renderMethods[$type])) {
@@ -94,7 +94,7 @@ class HtmlLeaf extends Leaf
             } else {
                 $list    = implode(',', array_keys(self::$renderMethods));
                 $message = "Cannot register element kind: '$kind'. 
-                There is no render method for elements of type $type! 
+                There is no render method for elements of format type $type! 
                 Available render methods are: $list.";
                 throw new InvalidArgumentException($message);
             }
@@ -105,7 +105,7 @@ class HtmlLeaf extends Leaf
      * Set datatype description string.
      * @param [type] $dtd [description]
      */
-    public static function setDTD($dtd = 'html5')
+    public static function setDTD(string $dtd = 'html5')
     {
         self::$dtd = $dtd;
     }
@@ -116,7 +116,7 @@ class HtmlLeaf extends Leaf
      */
     public static function getDTD()
     {
-        return self::$dtd = dtd;
+        return self::$dtd;
     }
 
     /**
