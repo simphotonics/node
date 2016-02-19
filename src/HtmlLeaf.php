@@ -90,7 +90,7 @@ class HtmlLeaf extends Leaf
     {
         foreach ($elements as $kind => $type) {
             if (isset(self::$renderMethods[$type])) {
-                self::$elements[$kind] = $renderMethod;
+                self::$elements[$kind] = self::$renderMethods[$type];
             } else {
                 $list    = implode(',', array_keys(self::$renderMethods));
                 $message = "Cannot register element kind: '$kind'. 
