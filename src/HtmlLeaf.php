@@ -11,19 +11,38 @@ use InvalidArgumentException;
  * Description: Simphotonics\HtmlLeaf is an external node (leaf),
  *              and can be used for XHTML elements like br, img, span,
  *              etc. that do not have child nodes.
+ *
+ *              Notation:
+ *              The element 'kind' denotes the element tag without the brackets.
+ *              E.g.: <br/> => 'br', <span> </span> => 'span',
+ *              The element 'type' refers to the formatting of the xhtml element.
+ *              E.g.: <br/>                    => 'empty' (elements without content),
+ *                    <span> ... </span>       => 'block' (element with content),
+ *                    <!-- ... -->             => 'comment',
+ *                    <DOCTYPE! ... >          => 'dtd'.
  */
 
 class HtmlLeaf extends Leaf
 {
     /**
-     * Defined html elements
-     * @var array
+     * Available renderMethods
+     * @var array of the form ['element type' => 'renderMethod'].
      */
-    private static $elements = [
-        '!--' => 'renderComment',
-        '!DOCTYPE' => 'renderDTD'
+    private static $renderMethods = [
+        'block'  => 'renderBlock',
+        'empty'  => 'renderEmpty',
+        'dtd'    => 'renderDTD',
+        'comment'=> 'renderComment',
     ];
 
+    /**
+     * (Pre) Defined html elements
+     * @var array of the form [element kind => renderMethod]
+     */
+    private static $elements = [
+        '!--' => 'renderDTD',
+        '!DOCTYPE' => 'renderDTD'
+    ];
     /**
      * Data type declaration
      * @var string
@@ -64,18 +83,18 @@ class HtmlLeaf extends Leaf
 
     /**
      * Registers new element kind. "renderFunc" has to be an existing class method.
-     * @param  array  $spec Array of the form: ['element kind' => 'renderFunc', ...]
+     * @param  array  $spec Array of the form: ['element kind' => 'element type', ...]
      * @return void
      */
-    public static function registerElements($elements = ['br'=>'renderEmpty'])
+    public static function registerElements($elements = ['br'=>'empty'])
     {
-        foreach ($elements as $kind => $renderFunc) {
-            if (isset(self::$renderFunctions[$renderFunc])) {
-                self::$elements[$kind] = $renderFunc;
+        foreach ($elements as $kind => $type) {
+            if (isset(self::$renderMethods[$type])) {
+                self::$elements[$kind] = $renderMethod;
             } else {
-                $list    = implode(',', array_keys(self::$renderFunctions));
+                $list    = implode(',', array_keys(self::$renderMethods));
                 $message = "Cannot register element kind: '$kind'. 
-                Render method: '$renderFunc' does not exist! 
+                There is no render method for elements of type $type! 
                 Available render methods are: $list.";
                 throw new InvalidArgumentException($message);
             }
