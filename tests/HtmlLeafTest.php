@@ -39,7 +39,7 @@ class HtmlLeafTest extends \PHPUnit_Framework_TestCase
 
     public function testRenderEmpty()
     {
-        HtmlLeaf::registerElements(['br'=>'renderEmpty']);
+        HtmlLeaf::registerElements(['br'=>'empty']);
         $l = new HtmlLeaf(['kind' => 'br']);
         $this->assertEquals('<br />', "$l");
     }
