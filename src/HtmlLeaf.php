@@ -107,7 +107,7 @@ class HtmlLeaf extends Leaf
      */
     public static function setDTD($dtd = 'html5')
     {
-        $this->dtd = $dtd;
+        self::$dtd = $dtd;
     }
     
     /**
@@ -116,14 +116,14 @@ class HtmlLeaf extends Leaf
      */
     public static function getDTD()
     {
-        return $this->dtd;
+        return self::$dtd = dtd;
     }
 
     /**
      * Return elements array.
      * @return array
      */
-    public function getElements()
+    public static function getElements()
     {
         return self::$elements;
     }
