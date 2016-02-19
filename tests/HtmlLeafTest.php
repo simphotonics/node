@@ -13,7 +13,7 @@ class HtmlLeafTest extends \PHPUnit_Framework_TestCase
 {
     public function testRegisterElement()
     {
-        $element = ['br'=>'renderEmpty'];
+        $element = ['br'=>'empty'];
         HtmlLeaf::registerElements($element);
         $this->assertArraySubset($element, HtmlLeaf::getElements());
     }
@@ -24,7 +24,7 @@ class HtmlLeafTest extends \PHPUnit_Framework_TestCase
     public function testRegisterElementException()
     {
         $this->expectException(\InvalidArgumentException::class);
-        HtmlLeaf::registerElements(['img' => 'nonExistingMethod']);
+        HtmlLeaf::registerElements(['img' => 'non existing type']);
     }
 
     public function testRenderBlock()
