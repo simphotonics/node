@@ -3,7 +3,6 @@
 namespace Simphotonics\Dom;
 
 use Simphotonics\Utils\ArrayUtils as ArrayUtils;
-use UnexpectedValueException;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
