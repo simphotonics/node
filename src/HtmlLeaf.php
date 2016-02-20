@@ -175,7 +175,7 @@ class HtmlLeaf extends Leaf
             . ' ' . $this->cont . ' >';
         } else {
             return '<!DOCTYPE' . $this->attr2str()
-            . ' ' . $this->dtd . ' >';
+            . ' ' . self::$dtd . ' >';
         }
     }
     
