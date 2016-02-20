@@ -15,7 +15,7 @@ class HtmlLeafTest extends \PHPUnit_Framework_TestCase
     {
         $element = ['br'=>'empty'];
         HtmlLeaf::registerElements($element);
-        $this->assertArraySubset(HtmlLeaf::getElements(), ['br' => 'renderEmpty']);
+        $this->assertArraySubset(['br' => 'renderEmpty'], HtmlLeaf::getElements());
     }
 
     /**
@@ -53,12 +53,12 @@ class HtmlLeafTest extends \PHPUnit_Framework_TestCase
     public function testRenderDTD()
     {
         HtmlLeaf::setDTD('html5');
-        $dtd = new HtmlLeaf(['kind' => 'DOCTYPE!']);
+        $dtd = new HtmlLeaf(['kind' => '!DOCTYPE']);
         // Empty content => The static variable HtmlLeaf::$dtd
         //                  will be used as element content!
-        $this->assertEquals('<DOCTYPE! html5 >', "$dtd");
+        $this->assertEquals('<!DOCTYPE html5 >', "$dtd");
         // If a content is set, it overwrites the default content.
         $dtd->setCont('html5-test');
-        $this->assertEquals('<DOCTYPE! html5-test >', "$dtd");
+        $this->assertEquals('<!DOCTYPE html5-test >', "$dtd");
     }
 }
