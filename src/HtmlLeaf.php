@@ -9,17 +9,17 @@ use InvalidArgumentException;
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2015 Simphotonics
  * Description: Simphotonics\HtmlLeaf is an external node (leaf),
- *              and can be used for XHTML elements like br, img, span,
- *              etc. that do not have child nodes.
+ * and can be used for XHTML elements like br, img, span,
+ * etc. that do not have child nodes.
  *
- *              Notation:
- *              The element 'kind' denotes the element tag without the brackets.
- *              E.g.: <br/> => 'br', <span> </span> => 'span',
- *              The element 'format' refers to the formatting of the xhtml element.
- *              E.g.: <br/>                    => 'empty' (elements without content),
- *                    <span> ... </span>       => 'block' (element with content),
- *                    <!-- ... -->             => 'comment',
- *                    <DOCTYPE! ... >          => 'dtd'.
+ * Notation:
+ * The element 'kind' denotes the element tag without the brackets.
+ * E.g.: <br/> => 'br', <span> </span> => 'span',
+ * The element 'format' refers to the formatting of the xhtml element.
+ * E.g.: <br/>              => 'empty' (elements without content),
+ *       <span> ... </span> => 'block' (element with content),
+ *       <!-- ... -->       => 'comment',
+ *       <DOCTYPE! ... >    => 'dtd'.
  */
 
 class HtmlLeaf extends Leaf
