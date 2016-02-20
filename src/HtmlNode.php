@@ -17,7 +17,7 @@ namespace Simphotonics\Dom;
 class HtmlNode extends HtmlLeaf
 {
     use NodeMethods;
-    
+
     // ===============
     // PRIVATE METHODS
     // ===============
