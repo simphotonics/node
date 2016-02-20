@@ -26,7 +26,7 @@ class HtmlLeaf extends Leaf
 {
     /**
      * Available renderMethods
-     * @var array of the form ['element type' => 'renderMethod'].
+     * @var array of the form ['element format' => 'renderMethod'].
      */
     private static $renderMethods = [
         'block'  => 'renderBlock',
