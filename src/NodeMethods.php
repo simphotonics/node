@@ -55,7 +55,7 @@ trait NodeMethods
      * @param  Simphotonics\Node $input
      * @return Simphotonics\Node Returns appended node.
      */
-    public function appendChild(Node $node)
+    public function appendChild(Leaf $node)
     {
         $this->childNodes[] = $this->adopt($node);
         return $this->last();
@@ -79,7 +79,7 @@ trait NodeMethods
      * @param  Node   $input
      * @return Node
      */
-    public function prependChild(Node $node)
+    public function prependChild(Leaf $node)
     {
         array_unshift($this->Childnodes, $this->adopt($node));
         return $this->first();
@@ -101,10 +101,10 @@ trait NodeMethods
 
     /**
      * Adopt child node/leaf. Input class is assumed leaf/node!
-     * @param  Node   $node
+     * @param  Leaf       $node
      * @return void
      */
-    private function adopt(Node $node)
+    private function adopt(Leaf $node)
     {
         $newNode = ($this->recursion($node)) ? clone $node : $node;
         $newNode->parent = $this;
@@ -119,7 +119,7 @@ trait NodeMethods
      * @param  Node $node
      * @return bool
      */
-    private function recursion(Node $node)
+    private function recursion(Leaf $node)
     {
         if ($node->parent) {
             return true;
@@ -148,7 +148,7 @@ trait NodeMethods
      * @param  Simphotonics\Node
      * @return bool  Returns true on success.
      */
-    public function removeChild(Node $node)
+    public function removeChild(Leaf $node)
     {
         $key = $this->getKey($node);
         // N.B. The key may be 0 or "0". We explicitly
@@ -170,7 +170,7 @@ trait NodeMethods
      * @param  Node $oldNode
      * @return bool  Return true on success.
      */
-    public function replaceChild(Node $newNode, Node $oldNode)
+    public function replaceChild(Leaf $newNode, Leaf $oldNode)
     {
         $key = $this->getKey($oldNode);
         if ($key === false) {
@@ -191,7 +191,7 @@ trait NodeMethods
      * @param  Node   $oldNode
      * @return bool   Return true on success.
      */
-    public function replaceNode(Node $newNode, Node $oldNode)
+    public function replaceNode(Leaf $newNode, Leaf $oldNode)
     {
         // First scan direct descendants
         if ($this->replaceChild($newNode, $oldNode)) {
@@ -215,7 +215,7 @@ trait NodeMethods
      * @param  Node   $oldNode
      * @return bool   Returns true on success.
      */
-    public function insertBefore(Node $newNode, Node $oldNode)
+    public function insertBefore(Leaf $newNode, Leaf $oldNode)
     {
         return $this->insert($this->adopt($newNode), $oldNode, 0);
     }
@@ -226,7 +226,7 @@ trait NodeMethods
      * @param  Node $oldNode
      * @return bool          Returns true on success.
      */
-    public function insertAfter(Node $newNode, Node $oldNode)
+    public function insertAfter(Leaf $newNode, Leaf $oldNode)
     {
         return $this->insert($this->adopt($newNode), $oldNode, 1);
     }
@@ -462,7 +462,7 @@ trait NodeMethods
      * @param  integer $offset
      * @return bool  Return true on success.
      */
-    private function insert(Node $newNode, Node $oldNode, $offset = 0)
+    private function insert(Leaf $newNode, Leaf $oldNode, $offset = 0)
     {
         $key = $this->getKey($oldNode);
 
@@ -480,7 +480,7 @@ trait NodeMethods
      * @param  node $node
      * @return int        Valid element key or false.
      */
-    private function getKey(Node $node)
+    private function getKey(Leaf $node)
     {
         return array_search($node, $this->childNodes, true);
     }
