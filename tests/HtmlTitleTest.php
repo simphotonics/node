@@ -10,7 +10,7 @@ use Simphotonics\Dom\HtmlTitle;
  * Description: Tests Simphotonics\HtmlTitle using URI's with
  * different format.
  */
-class HtmlLeafTest extends \PHPUnit_Framework_TestCase
+class HtmlTitleTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Simulate home uri
