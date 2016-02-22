@@ -63,12 +63,14 @@ class HtmlTitle extends HtmlLeaf
      */
     private static function getTitle($flag)
     {
-        // Get file name/uri
-        $filename  = pathinfo($_SERVER['REQUEST_URI'])['filename'];
         // Check if uri contains a query.
-        $qmIsHere  = strpos($filename, '?');
-        $title  = ($qmIsHere === false) ? $title : substr($filename, $qmIsHere);
-        return self::formatTitle($title, $flag);
+        $uri = $_SERVER['REQUEST_URI'];
+        $qmIsHere  = strpos($uri, '?');
+        $uri  = ($qmIsHere === false) ? $uri :
+            substr($uri, 0, $qmIsHere);
+        // Get file name
+        $filename  = pathinfo($uri)['filename'];
+        return self::formatTitle($filename, $flag);
     }
 
     /**
@@ -80,11 +82,8 @@ class HtmlTitle extends HtmlLeaf
     private static function formatTitle($title, $flag = self::FIRST_TO_UPPER_CASE)
     {
         // Set web site title to 'Home' for uri index (index.php) or ''.
-        if ($title == 'index' or $title == '') {
-            if ($flag) {
-                return 'HOME';
-            }
-            return 'Home';
+        if (strtolower($title) == 'index' or $title == '') {
+            return ($flag) ? 'HOME': 'Home';
         }
         // Explode string to array
         $titleArray = str_split($title);
@@ -102,10 +101,6 @@ class HtmlTitle extends HtmlLeaf
         // Implode array and trim white space
         $titleString = trim(implode($titleArray));
         // Apply format flags
-        if ($flag) {
-            return strtoupper($titleString);
-        }
-        // Change first character of each word to upper case
-        return ucwords($titleString);
+        return ($flag) ? strtoupper($titleString) : ucwords($titleString);
     }
 }
