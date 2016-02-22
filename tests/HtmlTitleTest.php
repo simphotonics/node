@@ -79,7 +79,7 @@ class HtmlTitleTest extends \PHPUnit_Framework_TestCase
      */
     private function template($uri)
     {
-        $_SERVER[REQUEST_URI] = $uri;
+        $_SERVER['REQUEST_URI'] = $uri;
         $title = new HtmlTitle('SIMPHOTONICS');
         $this->assertEquals("<title />", "$title");
     }

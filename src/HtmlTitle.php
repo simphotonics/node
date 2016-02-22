@@ -64,7 +64,7 @@ class HtmlTitle extends HtmlLeaf
     private static function getTitle($flag)
     {
         // Get file name/uri
-        $filename  = pathinfo($_SERVER[REQUEST_URI])['filename'];
+        $filename  = pathinfo($_SERVER['REQUEST_URI'])['filename'];
         // Check if uri contains a query.
         $qmIsHere  = strpos($filename, '?');
         $title  = ($qmIsHere === false) ? $title : substr($filename, $qmIsHere);
