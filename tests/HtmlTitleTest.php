@@ -28,7 +28,7 @@ class HtmlTitleTest extends \PHPUnit_Framework_TestCase
      * Standard uri
      * @var string
      */
-    private $standard_uri = "https:://www.simphotonics.com/user/LoginForm.php";
+    private $standardUri = "https:://www.simphotonics.com/user/LoginForm.php";
 
     /**
      * Laravel style uri
@@ -49,27 +49,27 @@ class HtmlTitleTest extends \PHPUnit_Framework_TestCase
 
     public function testEmptyUri()
     {
-        $this->template($this->emptyUri);
+        $this->checktitle($this->emptyUri, 'SIMPHOTONICS - Home');
     }
 
     public function testHomeUri()
     {
-        $this->template($this->homeUri);
+        $this->checktitle($this->homeUri, 'SIMPHOTONICS - Home');
     }
 
     public function testStandardUri()
     {
-        $this->template($this->standarUri);
+        $this->checktitle($this->standardUri, 'SIMPHOTONICS - Login Form');
     }
 
     public function testLaravelUri()
     {
-        $this->template($this->laravelUri);
+        $this->checktitle($this->laravelUri, 'SIMPHOTONICS - About Us');
     }
 
     public function testQueryUri()
     {
-        $this->template($this->queryUri);
+        $this->checktitle($this->queryUri, 'SIMPHOTONICS - Post');
     }
 
     /**
@@ -77,10 +77,10 @@ class HtmlTitleTest extends \PHPUnit_Framework_TestCase
      * @param  string $uri Static variable
      * @return void
      */
-    private function template($uri)
+    private function checkTitle($uri, $expectedTitle)
     {
         $_SERVER['REQUEST_URI'] = $uri;
-        $title = new HtmlTitle('SIMPHOTONICS');
-        $this->assertEquals("<title />", "$title");
+        $t = new HtmlTitle('SIMPHOTONICS');
+        $this->assertEquals("<title $expectedTitle/>", "$t");
     }
 }
