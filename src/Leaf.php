@@ -281,6 +281,19 @@ class Leaf
     }
 
     /**
+     * Checks if node has child nodes.
+     * Since leaf is an external node this function
+     * always returns false.
+     * It is used trait Simphotonics\Dom\NodeMethods::recursion.
+     *
+     * @return boolean
+     */
+    public function hasChildNodes()
+    {
+        return false;
+    }
+
+    /**
      * Implodes the attributes array of a node.
      * @param  string $glue
      * @return string
