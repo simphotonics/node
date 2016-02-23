@@ -68,7 +68,7 @@ class HtmlLeaf extends Leaf
      * Initialise xml element types.
      * @return void
      */
-    public static function readElements(string $filename = 'elements.php')
+    public static function readElements($filename = 'elements.php')
     {
         FileUtils::assertFileReadable($filename);
         require($filename);
@@ -105,7 +105,7 @@ class HtmlLeaf extends Leaf
      * Set datatype description string.
      * @param [type] $dtd [description]
      */
-    public static function setDTD(string $dtd = 'html5')
+    public static function setDTD($dtd = 'html5')
     {
         self::$dtd = $dtd;
     }
