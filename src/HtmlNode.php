@@ -14,9 +14,27 @@ namespace Simphotonics\Dom;
  * E.g.: <span> </span> => 'span'.
  */
 
-class HtmlNode extends HtmlLeaf
+class HtmlNode extends HtmlLeaf implements \RecursiveIterator, \ArrayAccess
 {
     use NodeMethods;
+
+    /**
+     * Child nodes.
+     * @var Array
+     */
+    protected $childNodes = [];
+
+    /**
+     * Constant used in @see $this->getDescendants()
+     * to select only child nodes (direct descendants).
+     */
+    const CHILD_NODES = true;
+
+    /**
+     * Constant used in @see $this->getDescendants()
+     * to select all descendant nodes.
+     */
+    const ALL_NODES = false;
 
     // ===============
     // PRIVATE METHODS
