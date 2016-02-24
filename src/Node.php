@@ -17,7 +17,7 @@ class Node extends Leaf implements \RecursiveIterator, \ArrayAccess
      * Child nodes.
      * @var Array
      */
-    public $childNodes = [];
+    protected $childNodes = [];
 
     /**
      * Constant used in @see $this->getDescendants()
