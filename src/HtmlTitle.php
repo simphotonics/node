@@ -1,6 +1,9 @@
 <?php
 namespace Simphotonics\Dom;
 
+use Simphotonics\Dom\HtmlLeaf;
+use Simphotonics\Utils\WebUtils;
+
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2015 Simphotonics
@@ -63,13 +66,7 @@ class HtmlTitle extends HtmlLeaf
      */
     private static function getTitle($flag)
     {
-        // Check if uri contains a query.
-        $uri = $_SERVER['REQUEST_URI'];
-        $qmIsHere  = strpos($uri, '?');
-        $uri  = ($qmIsHere === false) ? $uri :
-            substr($uri, 0, $qmIsHere);
-        // Get file name
-        $filename  = pathinfo($uri)['filename'];
+        $filename = WebUtils::baseURI();
         return self::formatTitle($filename, $flag);
     }
 
