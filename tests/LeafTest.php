@@ -3,6 +3,7 @@
 namespace Simphotonics\Dom\Tests;
 
 use Simphotonics\Dom\Leaf;
+use Simphotonics\Dom\Node;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -71,5 +72,15 @@ class LeafTest extends \PHPUnit_Framework_TestCase
         $newline = (PHP_SAPI == 'cli') ? "\n" : "<br/>";
         $expected = self::$l->getID(). " | parent: NULL". $newline;
         $this->assertEquals($expected, self::$l->showID());
+    }
+
+    public function testGetAncestor()
+    {
+        $a = new Leaf(['kind' => 'a']);
+        $div = new Node();
+        $body = new Node(['kind' => 'body']);
+        $body->appendChild($div)->appendChild($a);
+        $ancestor = $a->getAncestor(2);
+        $this->assertEquals($body, $ancestor);
     }
 }
