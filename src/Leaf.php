@@ -271,6 +271,7 @@ class Leaf
         if ($n < 1) {
             return null;
         }
+        $current = $this;
         for ($i = 0; $i < $n; ++$i) {
             if (!$current->parent) {
                 return null;
