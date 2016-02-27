@@ -14,17 +14,11 @@ use Simphotonics\Dom\HtmlDropDownNavigator;
  */
 class HtmlDropDownNavigatorTest extends \PHPUnit_Framework_TestCase
 {
-    public function __construct()
-    {
-        HtmlDropDownNavigator::registerElements(['a' => 'empty']);
-    }
-
-    
     public function testEntrySorting()
     {
         $_SERVER['REQUEST_URI'] = '/services';
         $nav = self::initDropDownNavigator();
-        $this->assertEquals('<div id="nav" class="has-shadow"><ul class="dropDownMenu"><li class="here"><a href="/services" SERVICES/></li><li><a href="/" HOME/></li><li><a href="/about-us" ABOUT-US/></li></ul></div>', "$nav");
+        $this->assertEquals('<div id="nav" class="has-shadow"><ul class="dropDownMenu"><li class="here"><a href="/services">SERVICES</a></li><li><a href="/">HOME</a></li><li><a href="/about-us">ABOUT-US</a></li></ul></div>', "$nav");
     }
     
     /**
