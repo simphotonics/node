@@ -14,24 +14,18 @@ use Simphotonics\Dom\HtmlNavigator;
  */
 class HtmlNavigatorTest extends \PHPUnit_Framework_TestCase
 {
-    public function __construct()
-    {
-        HtmlNavigator::registerElements(['a' => 'empty']);
-        
-    }
-
     public function testHome()
     {
         $_SERVER['REQUEST_URI'] = '/';
         $nav = self::initNavigator();
-        $this->assertEquals('<div id="nav" class="has-shadow"><ul id="mainMenu"><li class="here"><a href="/" HOME/></li><li><a href="/services" SERVICES/></li></ul></div>', "$nav");
+        $this->assertEquals('<div id="nav" class="has-shadow"><ul id="mainMenu"><li class="here"><a href="/">HOME</a></li><li><a href="/services">SERVICES</a></li></ul></div>', "$nav");
     }
 
     public function testServices()
     {
         $_SERVER['REQUEST_URI'] = '/services';
         $nav = self::initNavigator();
-        $this->assertEquals('<div id="nav" class="has-shadow"><ul id="mainMenu"><li><a href="/" HOME/></li><li class="here"><a href="/services" SERVICES/></li></ul></div>', "$nav");
+        $this->assertEquals('<div id="nav" class="has-shadow"><ul id="mainMenu"><li><a href="/">HOME</a></li><li class="here"><a href="/services">SERVICES</a></li></ul></div>', "$nav");
     }
     
     /**
