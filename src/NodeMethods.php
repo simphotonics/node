@@ -41,7 +41,7 @@ trait NodeMethods
     {
         // Reset parent node
         $this->parent = null;
-        $this->id = $this->kind.self::$count++;
+        $this->id = ++self::$count;
         // Clone the child nodes and set the parent node.
         foreach ($this->childNodes as $key => $node) {
             $newNode = clone $node;
@@ -161,6 +161,8 @@ trait NodeMethods
         if (isset($node)) {
             $node->parent = null;
         }
+        //Re-index childNodes
+        $this->childNodes = array_values($this->childNodes);
         return true;
     }
 
@@ -176,7 +178,7 @@ trait NodeMethods
         if ($key === false) {
             return false;
         }
-        $this->childNodes[$key] = $newNode;
+        $this->childNodes[$key] = $this->adopt($newNode);
         if (isset($oldNode)) {
             $oldNode->parent = null;
         }
@@ -411,16 +413,19 @@ trait NodeMethods
         // Discriminate between CLI and HTML
         $blank = (PHP_SAPI == 'cli') ? "   " : " &nbsp &nbsp &nbsp";
         $newline = (PHP_SAPI == 'cli') ? "\n" : "<br/>";
-        $out = $newline . $this->getID();
+        $parentPre = " | parent: ";
+        $parentID = ($this->getParent() == null) ? "NULL" : $this->getParent()->getID();
+        $out = $newline . $this->getID(). $parentPre. $parentID. $newline;
             // Create instance of RecursiveIteratorIterator with option SELF_FIRST.
         $nodeRIT = new RecursiveIteratorIterator($this, 1);
         foreach ($nodeRIT as $node) {
             $out .= str_repeat(
                 $blank,
                 $nodeRIT->getDepth() + 1
-            ) . $node->getID();
+            ) . $node->getID(). $parentPre.
+            $node->parent->getID(). $newline;
         }
-        return $out.$newline;
+        return $out;
     }
     
     /**
@@ -457,10 +462,12 @@ trait NodeMethods
 
     /**
      * Insert new node at a given offset.
+     * Note: It is assumed that $newNode has been 'adopted' in
+     * the function calling $this->insert().
      * @param  node  $newNode
      * @param  node  $oldNode
      * @param  integer $offset
-     * @return bool  Return true on success.
+     * @return bool  Returns true on success.
      */
     private function insert(Leaf $newNode, Leaf $oldNode, $offset = 0)
     {
