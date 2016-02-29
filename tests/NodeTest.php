@@ -101,9 +101,9 @@ class NodeTest extends \PHPUnit_Framework_TestCase
     public function testInsertAfter()
     {
         $n = new Node();
+        self::init();
         $this->assertEquals(true, self::$n->insertAfter($n, self::$n2));
         $this->assertEquals($n, self::$n[3]);
-
     }
 
     public function testHasChildNodes()
