@@ -2,6 +2,8 @@
 
 namespace Simphotonics\Dom;
 
+use Simphotonics\Dom\NodeAccess;
+
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2015 Simphotonics
@@ -14,7 +16,7 @@ namespace Simphotonics\Dom;
  * E.g.: <span> </span> => 'span'.
  */
 
-class HtmlNode extends HtmlLeaf implements \RecursiveIterator, \ArrayAccess
+class HtmlNode extends HtmlLeaf implements \ArrayAccess, NodeAccess, \RecursiveIterator
 {
     use NodeMethods;
 
@@ -23,18 +25,6 @@ class HtmlNode extends HtmlLeaf implements \RecursiveIterator, \ArrayAccess
      * @var Array
      */
     protected $childNodes = [];
-
-    /**
-     * Constant used in @see $this->getDescendants()
-     * to select only child nodes (direct descendants).
-     */
-    const CHILD_NODES = true;
-
-    /**
-     * Constant used in @see $this->getDescendants()
-     * to select all descendant nodes.
-     */
-    const ALL_NODES = false;
 
     // ===============
     // PRIVATE METHODS
