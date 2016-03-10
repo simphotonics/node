@@ -136,7 +136,9 @@ class HtmlLeaf extends Leaf
     {
         // Check element format.
         if (isset(self::$elements[$this->kind])) {
-            //Calls methods'renderDTD','renderEmpty','renderComment'
+            //Calls methods: 'renderDTD',
+            //               'renderEmpty',
+            //               'renderComment'.
             $varfunc = self::$elements[$this->kind];
             return $this->$varfunc();
         }
@@ -161,7 +163,7 @@ class HtmlLeaf extends Leaf
     protected function renderEmpty()
     {
         return "<$this->kind" . $this->attr2str()
-        . ' ' . $this->cont . '/>';
+        .'/>';
     }
     
     /**
