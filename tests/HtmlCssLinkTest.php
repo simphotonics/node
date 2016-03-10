@@ -81,6 +81,6 @@ class HtmlCssLinkTest extends \PHPUnit_Framework_TestCase
     {
         $_SERVER['REQUEST_URI'] = $uri;
         $cssLink = new HtmlCssLink('/style');
-        $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\" href=\"$expectedPath\" media=\"all\" />", "$cssLink");
+        $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\" href=\"$expectedPath\" media=\"all\"/>", "$cssLink");
     }
 }
