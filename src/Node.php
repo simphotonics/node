@@ -2,14 +2,15 @@
 
 namespace Simphotonics\Dom;
 
-use Simphotonics\Utils\ArrayUtils as ArrayUtils;
+use Simphotonics\Utils\ArrayUtils;
+use Simphotonics\Dom\NodeAccess;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2015 Simphotonics
  * Description: Simphotonics\Node is a dom-node.
  */
-class Node extends Leaf implements \RecursiveIterator, \ArrayAccess
+class Node extends Leaf implements \ArrayAccess, NodeAccess, \RecursiveIterator
 {
     use NodeMethods;
 
@@ -18,18 +19,6 @@ class Node extends Leaf implements \RecursiveIterator, \ArrayAccess
      * @var Array
      */
     protected $childNodes = [];
-
-    /**
-     * Constant used in @see $this->getDescendants()
-     * to select only child nodes (direct descendants).
-     */
-    const CHILD_NODES = true;
-
-    /**
-     * Constant used in @see $this->getDescendants()
-     * to select all descendant nodes.
-     */
-    const ALL_NODES = false;
 
     /**
      * Prints node hierarchy.
