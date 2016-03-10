@@ -4,6 +4,7 @@ namespace Simphotonics\Dom;
 
 use Simphotonics\Utils\ArrayUtils;
 use Simphotonics\Dom\Node;
+use Simphotonics\Dom\NodeAcess;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -65,12 +66,12 @@ class NodeRenderer
      *
      * @return string
      */
-    public static function renderRecursive($node)
+    public static function renderRecursive(NodeAccess $node)
     {
         // Initialize $source
         $source = "\n";
         // Get descendants (child nodes first);
-        $descNodes = $node->getDescendants(\RecursiveIteratorIterator::CHILD_FIRST);
+        $descNodes = $node->getDescendants(NodeAccess::CHILD_FIRST);
         foreach ($descNodes as $descNode) {
             $source .= self::render($descNode) . "\n";
         }
