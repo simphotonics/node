@@ -28,13 +28,13 @@ class HtmlTitleTest extends \PHPUnit_Framework_TestCase
      * Standard uri
      * @var string
      */
-    private $standardUri = "https:://www.simphotonics.com/user/LoginForm.php";
+    private $standardUri = "https:://www.simphotonics.com/user/User-LoginForm.php";
 
     /**
      * Laravel style uri
      * @var string
      */
-    private $laravelUri  = "/company/profile/about-us";
+    private $laravelUri  = "/company/profile/about_us";
 
     /**
      * Uri containig query
@@ -42,10 +42,6 @@ class HtmlTitleTest extends \PHPUnit_Framework_TestCase
      */
     private $queryUri    = "https:://simphotonics.com/post?url=http://google.com/&amp;message=This%20is%20my%20post";
 
-    public function __construct()
-    {
-        HtmlTitle::registerElements(['title' => 'empty']);
-    }
 
     public function testEmptyUri()
     {
@@ -59,7 +55,7 @@ class HtmlTitleTest extends \PHPUnit_Framework_TestCase
 
     public function testStandardUri()
     {
-        $this->checktitle($this->standardUri, 'SIMPHOTONICS - Login Form');
+        $this->checktitle($this->standardUri, 'SIMPHOTONICS - User Login Form');
     }
 
     public function testLaravelUri()
@@ -81,6 +77,6 @@ class HtmlTitleTest extends \PHPUnit_Framework_TestCase
     {
         $_SERVER['REQUEST_URI'] = $uri;
         $t = new HtmlTitle('SIMPHOTONICS');
-        $this->assertEquals("<title $expectedTitle/>", "$t");
+        $this->assertEquals("<title>$expectedTitle</title>", "$t");
     }
 }
