@@ -2,13 +2,15 @@
 
 namespace Simphotonics\Dom;
 
+use Simphotonics\Dom\LeafAccess;
+
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2015 Simphotonics
  * Description: Implements methods available to external
  * nodes (leaves). It is the base class of Simphotonics\Node.
  */
-class Leaf
+class Leaf implements LeafAccess
 {
     /**
      * Object count (used to set the node id).
@@ -145,7 +147,8 @@ class Leaf
     }
 
     /**
-     * Checks if attribute array is not empty.
+     * Returns true if attribute array is
+     * not empty.
      * @return boolean
      */
     public function hasAttr()
@@ -285,7 +288,8 @@ class Leaf
      * Checks if node has child nodes.
      * Since leaf is an external node this function
      * always returns false.
-     * It is used trait Simphotonics\Dom\NodeMethods::recursion.
+     * It is used in trait:
+     * Simphotonics\Dom\NodeMethods::recursion.
      *
      * @return boolean
      */
