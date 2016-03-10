@@ -23,7 +23,7 @@ class HtmlCheckBoxTest extends \PHPUnit_Framework_TestCase
     {
         $checkBox = new HtmlCheckBox('checkBoxName', 'checkBoxValue');
         $this->assertEquals(
-            '<input name="checkBoxName" value="checkBoxValue" type="checkbox" />',
+            '<input name="checkBoxName" value="checkBoxValue" type="checkbox"/>',
             "$checkBox"
         );
     }
@@ -35,6 +35,6 @@ class HtmlCheckBoxTest extends \PHPUnit_Framework_TestCase
             ['name1' => 'value1','name2' => 'value2']
         );
         $div->append($checkBoxes);
-        $this->assertEquals('<div><span><input name="name1" value="value1" type="checkbox" /></span><br /><span><input name="name2" value="value2" type="checkbox" /></span></div>', "$div");
+        $this->assertEquals('<div><span><input name="name1" value="value1" type="checkbox"/></span><br/><span><input name="name2" value="value2" type="checkbox"/></span></div>', "$div");
     }
 }
