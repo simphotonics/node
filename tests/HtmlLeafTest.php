@@ -41,7 +41,7 @@ class HtmlLeafTest extends \PHPUnit_Framework_TestCase
     {
         HtmlLeaf::registerElements(['br'=>'empty']);
         $l = new HtmlLeaf(['kind' => 'br']);
-        $this->assertEquals('<br />', "$l");
+        $this->assertEquals('<br/>', "$l");
     }
    
     public function testRenderComment()
