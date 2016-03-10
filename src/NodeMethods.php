@@ -252,7 +252,7 @@ trait NodeMethods
      * @param  Node   $oldNode
      * @return bool   Return true on success.
      */
-    public function removeNode($oldNode)
+    public function removeNode(Leaf $oldNode)
     {
         // First scan direct descendants
         if ($this->removeChild($oldNode)) {
@@ -282,11 +282,10 @@ trait NodeMethods
     /**
      * Returns an array containing all descendant nodes/leaves.
      * @param  int $mode @see \RecursiveIteratorIterator takes
-     * values: 0 => LEAVES_ONLY, 1 => SELF_FIRST, 2 => LEAVES_FIRST
-     *
-     * @return Array
+     * values: LEAVES_ONLY, SELF_FIRST, CHILD_FIRST
+     * @return array
      */
-    public function getDescendants($mode = 1)
+    public function getDescendants($mode = self::SELF_FIRST)
     {
         $nodes = [];
         if (!$this->hasChildNodes()) {
