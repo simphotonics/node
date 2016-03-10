@@ -82,21 +82,19 @@ class HtmlTitle extends HtmlLeaf
         if (strtolower($title) == 'index' or $title == '') {
             return ($flag) ? 'HOME': 'Home';
         }
-        // Explode string to array
-        $titleArray = str_split($title);
-        // Convert camelcaps
-        $prev = 'A';
-        foreach ($titleArray as $key => $char) {
-            if (ctype_upper($char) and ctype_lower($prev)) {
-                $titleArray[$key] = " " . $titleArray[$key];
-            }
-            $prev = $char;
-            if ($char === '_' or $char === '-') {
-                $titleArray[$key] = ' ';
-            }
-        }
-        // Implode array and trim white space
-        $titleString = trim(implode($titleArray));
+        //
+        $pattern = '@
+            (
+                # Zero width match. 
+                # Credit: http://www.rexegg.com/regex-lookarounds.html#camelinsert
+                (?<=[a-z])(?=[A-Z])|
+                # Split at underscore
+                _|
+                # Split at minus
+                -
+            )@x';
+        $titleString = preg_replace($pattern, ' ', $title);
+        
         // Apply format flags
         return ($flag) ? strtoupper($titleString) : ucwords($titleString);
     }
