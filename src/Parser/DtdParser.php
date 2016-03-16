@@ -8,7 +8,8 @@ use Simphotonics\Utils\FileUtils;
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2016 Simphotonics
  * Description: Parses text containing data type definitions
- * attempting to extract
+ * attempting to extract entities, attribute lists, and
+ * elements.
  */
 class DtdParser
 {
