@@ -4,7 +4,7 @@ namespace Simphotonics\Dom\Tests;
 
 use Simphotonics\Dom\HtmlLeaf;
 use Simphotonics\Dom\HtmlNode;
-use Simphotonics\Dom\NodeRenderer as Renderer;
+use Simphotonics\Dom\Parser\NodeRenderer as Renderer;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
