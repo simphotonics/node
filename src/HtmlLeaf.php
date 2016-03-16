@@ -41,7 +41,17 @@ class HtmlLeaf extends Leaf
      */
     private static $elements = [
         '!--' => 'renderComment',
-        '!DOCTYPE' => 'renderDTD'
+        '!DOCTYPE' => 'renderDTD',
+        'base' => 'empty',
+        'meta' => 'empty',
+        'link' => 'empty',
+        'hr' => 'empty',
+        'br' => 'empty',
+        'param' => 'empty',
+        'img' => 'empty',
+        'area' => 'empty',
+        'input' => 'empty',
+        'col' => 'empty'
     ];
     /**
      * Data type declaration
