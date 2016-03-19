@@ -21,7 +21,7 @@ Alternatively, add simphotonics/dom to the list of required libraries in your co
 
 ## Usage
 
-To create a 'leaf' (an external noded without child nodes):
+To create HTML 'leaves' or external nodes:
 ```php
 use Simphotonics\Dom\HtmlLeaf;
 
@@ -31,7 +31,7 @@ $dtd = new HtmlLeaf([
     'cont' => 'html'
 ]);
 ```
-To render the node as HTML just use:
+To render the object above as HTML source code use:
 ```php
 print $dtd;
 ```
@@ -39,6 +39,10 @@ which will output:
 ```html
 <!DOCTYPE html>
 ```
+
+To create HTML nodes:
+```php
+use Simphotonics\Dom\HtmlNode;
 
 // Main document
 $doc = new HtmlNode([
@@ -48,7 +52,10 @@ $doc = new HtmlNode([
         'lang' => "en-GB"
     ]
 ]);
+```
 
+
+```php
 // Web page title
 $title = new HtmlTitle('PBRC');
 
@@ -71,7 +78,7 @@ $icon = new htmlLeaf([
 
 $css = new HtmlCssLink('/style');
 
-// Header
+// Head
 $head = new HtmlNode([
   'kind' => 'head',
   'attr' => ['id' => 'head'],
