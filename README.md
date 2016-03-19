@@ -21,6 +21,7 @@ Alternatively, add simphotonics/dom to the list of required libraries in your co
 
 ## Usage
 
+### External Nodes
 To create HTML 'leaves' or external nodes:
 ```php
 use Simphotonics\Dom\HtmlLeaf;
