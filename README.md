@@ -12,23 +12,33 @@ From a terminal issue the command:
 Alternatively, add simphotonics/dom to the list of required libraries in your composer.json file:
 
 ```json
-...
+{
     "require": {
-        "simphotonics/dom": "^1.0"
-    },
-...
+        "simphotonics/dom": ">=1.0.0"
+    }
+}
 ```
 
 ## Usage
 
+To create a 'leaf' (an external noded without child nodes):
 ```php
-use Simphotonics\Dom\HtmlNode;
+use Simphotonics\Dom\HtmlLeaf;
 
 // DTD
 $dtd = new HtmlLeaf([
     'kind' => '!DOCTYPE',
     'cont' => 'html'
 ]);
+```
+To render the node as HTML just use:
+```php
+print $dtd;
+```
+which will output: 
+```html
+<!DOCTYPE html>
+```
 
 // Main document
 $doc = new HtmlNode([
