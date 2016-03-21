@@ -331,7 +331,7 @@ class HtmlTable extends HtmlNode
      */
     private function checkRowOffsetRange($rowOffset)
     {
-        return ($rowOffset > 0) ? $rowOffset : $this->rowOffset;
+        return ($rowOffset >= 0) ? $rowOffset : $this->rowOffset;
     }
 
     /**
