@@ -1,6 +1,6 @@
 # Simphotonics Dom Parser
 
-Simphotonics Dom (SD) Parser contains classes that can be used to [parse data type definition files](#parse-dtd) in order to extract entities and elements, [parse HTML documents](#parse-html) to get the corresponding SD nodes, and [render SD nodes as PHP source code](#render).
+Simphotonics Dom (SD) Parser contains classes that can be used to [parse data type definition files](#parse-dtd) in order to extract entities and elements, [parse HTML documents](#parse-html) to get the corresponding SD nodes, and [render SD nodes as PHP source code](#render-nodes).
 
 ## Installation
 
