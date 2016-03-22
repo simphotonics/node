@@ -36,10 +36,11 @@ class NodeRenderer
      */
     public static function render(Leaf $node, $varName = '')
     {
-        // Variable name
-        $source = ($varName) ? '$' . $varName : '$' . $node->getID();
+        // Validate variable name
+        $varName = ($varName) ? $varName : $node->getID();
+        $varName = self::checkVariableName($varName);
         // Object kind
-        $source .= ' = new \\' . get_class($node) ."([\n" . "  'kind' => '{$node->getKind()}'";
+        $source = '$'.$varName.' = new \\' . get_class($node) ."([\n" . "  'kind' => '{$node->getKind()}'";
         // Object attributes
         if ($node->hasAttr()) {
             $source .= ",\n" . self::renderArray($node->getAttr(), 'attr', 1);
@@ -102,7 +103,8 @@ class NodeRenderer
         $out = $outerIndent . "'$name'=> [\n";
         // Body
         foreach ($childNodes as $node) {
-            $out .= $innerIndent . '$' . $node->getID() . ",\n";
+            $out .= $innerIndent . '$' .
+            self::checkVariableName($node->getID()) . ",\n";
         }
         $out = rtrim($out, ",\n");   // Eliminate last comma and newline
         // Close bracket
@@ -152,5 +154,36 @@ class NodeRenderer
             $out .= "\n$outerIndent], \n";
         }
         return $out;
+    }
+
+    /**
+     * Check if variable name conforms to syntax constraints.
+     * @method  checkVariableName
+     * @param   string             $name  Variable name
+     * @return  string                    New name
+     */
+    private static function checkVariableName($name = '')
+    {
+        // Starts with a letter
+        $pattern = '@^[a-zA-z]+[a-zA-z0-9]*@';
+        if (preg_match($pattern, $name)) {
+            return strtolower($name);
+        }
+        // Does not start with a letter
+        $pattern = '@[a-zA-z]+[a-zA-z0-9]*@';
+        if (preg_match($pattern, $name, $matches)) {
+            return strtolower($matches[0]);
+        }
+        // Starts with !--
+        if (substr($name, 0, 3) === '!--') {
+            return 'comment'.substr($name, 3);
+        }
+        // Contains at least one number
+        $pattern = '@[0-9]+@';
+        if (preg_match($pattern, $name, $matches)) {
+            return 'var'.$matches[0];
+        }
+        // If all else fails:
+        return 'var'.md5($varname);
     }
 }
