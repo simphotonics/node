@@ -22,9 +22,8 @@ class HtmlParser
     private $topNodes = [];
 
     /**
-     * Elements found processing the HTML document.
-     * Array with entries ['element kind' => 'format'].
-     * Example: ['br' => 'empty','div' => 'block', ...].
+     * Array listing empty HTML elements found:
+     * Example: ['br' => 'empty','img' => 'empty', ...].
      * @var  array
      */
     private $formatInfo = [];
@@ -44,7 +43,23 @@ class HtmlParser
      */
     public function __construct($source = '')
     {
-        $this->source = $this->prepareSource($source);
+        if (func_num_args() > 0) {
+            $this->source = $this->prepareSource($source);
+            $this->topNodes = $this->parseNodes($this->source);
+        }
+    }
+
+    /**
+     * Loads a HTML source file and parses string content.
+     * @method  loadDtd
+     * @param   string   $filename  Path to the HTML source code file.
+     * @return  void
+     */
+    public function loadHtml($filename = 'site.xhtml')
+    {
+        $this->source = $this->prepareSource(
+            FileUtils::loadFile($filename)
+        );
         $this->topNodes = $this->parseNodes($this->source);
     }
 
@@ -146,7 +161,7 @@ class HtmlParser
                     $nodes[] = new HtmlNode([
                         'kind' => $match['kind'],
                         'attr' => self::getAttr($match['attr']),
-                        'cont' => $match['text']
+                        'cont' => trim($match['text'])
                     ]);
                     if (strlen(trim($match['childNodes']))) {
                         $childNodes = $this->parseNodes($match['childNodes']);
