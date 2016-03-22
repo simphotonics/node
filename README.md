@@ -4,7 +4,7 @@ Simphotonics Dom (SD) nodes can be used to to create, edit, search, and output H
 
 SD nodes make composing HTML documents easier by removing the need for structured text and enabling reuse of HTML nodes. Most web sites use a fixed page layout that is then filled with the page content: text, anchors, images, etc. The section [web page template](#web-page-template) shows how to use SD nodes to create a simple two column empty web page prototype.
 
-Simphotonics Dom also includes a rudimentary HTML parser, a DTD parser, and a Node Renderer. For more information visit [SD Parser](https://github.com/simphotonics/dom/tree/master/src/Parser)
+Simphotonics Dom also includes a rudimentary HTML parser, a DTD parser, and a Node Renderer. For more information visit [https://github.com/simphotonics/dom/tree/master/src/Parser](https://github.com/simphotonics/dom/tree/master/src/Parser).
 ## Installation
 
 From a terminal issue the command: 
