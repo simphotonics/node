@@ -241,7 +241,7 @@ Let's assume that the current relative uri is */services*, then rendering $nav f
 </div>
 ```
 For completeness I include a rudimentary CSS file showing the basic styling of the navigator components. Notice
-the styling of the class *li.here*, that will highlight the navigator button pointing to the currently shown page. 
+the styling of the class *li.here* that will highlight the navigator button pointing to the currently shown page. 
 ```css
 #nav {
   position: relative;
