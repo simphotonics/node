@@ -22,20 +22,48 @@ class HtmlCssLink extends HtmlLeaf
      * Note: For Laravel applications $cssFile could be set to:
      *       Route::currentRouteName().'css' .
      */
-    public function __construct($cssFolder = '/style', $cssFile = 'Index.css')
-    {
-
-        $cssFilename = (func_num_args() > 1 ) ?
-                  func_get_arg(1) : WebUtils::baseURI();
-        $cssFilename =  (empty($cssFilename)) ? 'Index' : $cssFilename;
-        $path = $cssFolder. '/'. $cssFilename.'.css';
     
-         parent::__construct([
-        'kind' => 'link',
-        'attr' => ['rel' => 'stylesheet',
-        'type' => 'text/css',
-        'href' => $path,
-        'media' => 'all']
-         ]);
+    public $path = '';
+    public $cssFolder = '/style';
+    public $cssFilename = '';
+
+    public function __construct($cssFile = 'Index')
+    {
+        $this->cssFilename = (func_num_args() > 0 ) ?
+                  func_get_arg(0) : WebUtils::baseURI();
+        if (trim($this->cssFilename) == false) {
+            $this->cssFilename = 'Index';
+        }
+        parent::__construct([
+            'kind' => 'link',
+            'attr' => [
+                'rel' => 'stylesheet',
+                'type' => 'text/css',
+                'href' => &$this->path,
+                'media' => 'all'
+                ]
+        ]);
+    }
+
+    /**
+     * Sets the Css folder.
+     * @method  setCssFolder
+     * @param   string        $cssFolder
+     */
+    public function setCssFolder($cssFolder = '')
+    {
+        $this->cssFolder = $cssFolder;
+    }
+
+    /**
+     * Returns string containing Css link element.
+     * Note: The path to the Css files is generated in this function!
+     * @method  __toString
+     * @return  string
+     */
+    public function __toString()
+    {
+        $this->path = $this->cssFolder. '/'. $this->cssFilename.'.css';
+        return parent::__toString();
     }
 }
