@@ -72,6 +72,13 @@ class HtmlCssLinkTest extends \PHPUnit_Framework_TestCase
         $this->checkCssLink($this->queryUri, '/style/post.css');
     }
 
+    public function testSetCssFolder()
+    {
+        $cssLink = new HtmlCssLink('about-us');
+        $cssLink->setCssFolder('cssFolder');
+        $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\" href=\"cssFolder/about-us.css\" media=\"all\"/>", "$cssLink");
+    }
+
     /**
      * Tests title string.
      * @param  string $uri Static variable
@@ -80,7 +87,7 @@ class HtmlCssLinkTest extends \PHPUnit_Framework_TestCase
     private function checkCssLink($uri, $expectedPath)
     {
         $_SERVER['REQUEST_URI'] = $uri;
-        $cssLink = new HtmlCssLink('/style');
+        $cssLink = new HtmlCssLink();
         $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\" href=\"$expectedPath\" media=\"all\"/>", "$cssLink");
     }
 }
