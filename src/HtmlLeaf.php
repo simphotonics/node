@@ -29,10 +29,10 @@ class HtmlLeaf extends Leaf
      * @var array of the form ['element format' => 'renderMethod'].
      */
     private static $renderMethods = [
-        'block'  => 'renderBlock',
-        'empty'  => 'renderEmpty',
-        'dtd'    => 'renderDTD',
-        'comment'=> 'renderComment',
+        'nested'  => 0,
+        'empty'  => 1,
+        'dtd'    => 2,
+        'comment'=> 3,
     ];
 
     /**
@@ -40,8 +40,8 @@ class HtmlLeaf extends Leaf
      * @var array of the form [element kind => renderMethod]
      */
     private static $elements = [
-        '!--' => 'renderComment',
-        '!DOCTYPE' => 'renderDTD',
+        '!--' => 'comment',
+        '!DOCTYPE' => 'dtd',
         'base' => 'empty',
         'meta' => 'empty',
         'link' => 'empty',
@@ -92,7 +92,7 @@ class HtmlLeaf extends Leaf
     }
 
     /**
-     * Registers new element kind. "renderFunc" has to be an existing class method.
+     * Registers new element kind.
      * @param  array  $spec Array of the form: ['element kind' => 'format', ...]
      * @return void
      */
@@ -100,7 +100,7 @@ class HtmlLeaf extends Leaf
     {
         foreach ($elements as $kind => $type) {
             if (isset(self::$renderMethods[$type])) {
-                self::$elements[$kind] = self::$renderMethods[$type];
+                self::$elements[$kind] = $type;
             } else {
                 $list    = implode(',', array_keys(self::$renderMethods));
                 $message = "Cannot register element kind: '$kind'. 
@@ -110,6 +110,7 @@ class HtmlLeaf extends Leaf
             }
         }
     }
+
 
     /**
      * Set datatype description string.
@@ -146,21 +147,21 @@ class HtmlLeaf extends Leaf
     {
         // Check element format.
         if (isset(self::$elements[$this->kind])) {
-            //Calls methods: 'renderDTD',
-            //               'renderEmpty',
-            //               'renderComment'.
+            //Calls methods: 'dtd()',
+            //               'empty()',
+            //               'comment()'.
             $varfunc = self::$elements[$this->kind];
             return $this->$varfunc();
         }
-        //Calls default render method: renderBlock().
-        return $this->renderBlock();
+        //Calls default render method: nested().
+        return $this->nested();
     }
     
     /**
-     * Renders an xml block element <tag ... /tag> .
+     * Renders nested xml elements:  <tag ... /tag> .
      * @return string
      */
-    protected function renderBlock()
+    protected function nested()
     {
         return "<$this->kind" . $this->attr2str()
         . '>' . $this->cont . "</$this->kind>";
@@ -170,7 +171,7 @@ class HtmlLeaf extends Leaf
      * Renders an empty xml element of the form <tag ... /> .
      * @return string
      */
-    protected function renderEmpty()
+    protected function empty()
     {
         return "<$this->kind" . $this->attr2str()
         .'/>';
@@ -180,7 +181,7 @@ class HtmlLeaf extends Leaf
      * Renders a doctype declaration <!DOCTYPE ... > .
      * @return string
      */
-    protected function renderDTD()
+    protected function dtd()
     {
         if ($this->hasCont()) {
             return '<!DOCTYPE' . $this->attr2str()
@@ -195,7 +196,7 @@ class HtmlLeaf extends Leaf
      * Renders a XML comment element <!-- ... --> .
      * @return string
      */
-    protected function renderComment()
+    protected function comment()
     {
         return '<!--' . $this->attr2str()
         . ' ' . $this->cont . ' -->';

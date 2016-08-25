@@ -31,10 +31,10 @@ class HtmlNode extends HtmlLeaf implements \ArrayAccess, NodeAccess, \RecursiveI
     // ===============
 
     /**
-     * Renders a block XML element with opening and closing tag.
+     * Renders a nested XML element with opening and closing tag.
      * @return string
      */
-    protected function renderBlock()
+    protected function nested()
     {
         return "<$this->kind" . $this->attr2str().
         '>' . $this->cont . $this->childObj2str() . "</$this->kind>";

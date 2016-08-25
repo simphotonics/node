@@ -15,7 +15,7 @@ class HtmlLeafTest extends \PHPUnit_Framework_TestCase
     {
         $element = ['br'=>'empty'];
         HtmlLeaf::registerElements($element);
-        $this->assertArraySubset(['br' => 'renderEmpty'], HtmlLeaf::getElements());
+        $this->assertArraySubset(['br' => 'empty'], HtmlLeaf::getElements());
     }
 
     /**
