@@ -81,7 +81,7 @@ trait NodeMethods
      */
     public function prependChild(Leaf $node)
     {
-        array_unshift($this->childnodes, $this->adopt($node));
+        array_unshift($this->childNodes, $this->adopt($node));
         return $this->first();
     }
 
@@ -94,7 +94,7 @@ trait NodeMethods
     {
         $input = array_reverse($input);
         foreach ($input as $node) {
-            array_unshift($this->childnodes, $this->adopt($node));
+            array_unshift($this->childNodes, $this->adopt($node));
         }
         return $this;
     }
