@@ -8,7 +8,7 @@ use Simphotonics\Utils\WebUtils;
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2016 Simphotonics
  * Description: Extends class HtmlLeaf by adding dynamic css links.
- * The css file name is generated using the calling script name
+ * The path to the css file is generated using the current uri
  * and the default css folder name.
  */
 class HtmlCssLink extends HtmlLeaf
@@ -20,19 +20,18 @@ class HtmlCssLink extends HtmlLeaf
      * @param  string   $cssFolder   Folder containing css style files.
      * @param  string   $cssFile     Optional css filename.
      * Note: For Laravel applications $cssFile could be set to:
-     *       Route::currentRouteName().'css' .
+     *       Route::currentRouteName().
      */
-    
-    public $path = '';
-    public $cssFolder = '/style';
-    public $cssFilename = '';
+    private $path = '';
+    private $cssFolder = '/style';
+    private $cssFile = '';
 
     public function __construct($cssFile = 'Index')
     {
-        $this->cssFilename = (func_num_args() > 0 ) ?
+        $this->cssFile = (func_num_args() > 0 ) ?
                   func_get_arg(0) : WebUtils::baseURI();
-        if (trim($this->cssFilename) == false) {
-            $this->cssFilename = 'Index';
+        if (trim($this->cssFile) == false) {
+            $this->cssFile = 'Index';
         }
         parent::__construct([
             'kind' => 'link',
@@ -63,7 +62,7 @@ class HtmlCssLink extends HtmlLeaf
      */
     public function __toString()
     {
-        $this->path = $this->cssFolder. '/'. $this->cssFilename.'.css';
+        $this->path = $this->cssFolder. '/'. $this->cssFile.'.css';
         return parent::__toString();
     }
 }
