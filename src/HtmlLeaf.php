@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simphotonics\Dom;
 
 use Simphotonics\Utils\FileUtils;
 use InvalidArgumentException;
 
 /**
- * @author D Reschner <d.reschner@simphotonics.com>
- * @copyright 2015 Simphotonics
- * Description: Simphotonics\HtmlLeaf is an external node (leaf),
+  * Description: Simphotonics\HtmlLeaf is an external node (leaf),
  * and can be used for XHTML elements like br, img, span,
  * etc. that do not have child nodes.
  *
@@ -16,7 +16,7 @@ use InvalidArgumentException;
  * The element 'kind' denotes the element tag without the brackets.
  * E.g.: <br/> => 'br', <span> </span> => 'span',
  * The element 'format' refers to the formatting of the xhtml element.
- * E.g.: <br/>              => 'empty' (elements without content),
+ * E.g.: <br/>              => 'inline' (elements without content),
  *       <span> ... </span> => 'block' (element with content),
  *       <!-- ... -->       => 'comment',
  *       <DOCTYPE! ... >    => 'dtd'.
@@ -29,10 +29,10 @@ class HtmlLeaf extends Leaf
      * @var array of the form ['element format' => 'renderMethod'].
      */
     private static $renderMethods = [
-        'nested'  => 0,
-        'empty'  => 1,
+        'block'  => 0,
+        'inline'  => 1,
         'dtd'    => 2,
-        'comment'=> 3,
+        'comment' => 3,
     ];
 
     /**
@@ -42,16 +42,16 @@ class HtmlLeaf extends Leaf
     private static $elements = [
         '!--' => 'comment',
         '!DOCTYPE' => 'dtd',
-        'base' => 'empty',
-        'meta' => 'empty',
-        'link' => 'empty',
-        'hr' => 'empty',
-        'br' => 'empty',
-        'param' => 'empty',
-        'img' => 'empty',
-        'area' => 'empty',
-        'input' => 'empty',
-        'col' => 'empty'
+        'base' => 'inline',
+        'meta' => 'inline',
+        'link' => 'inline',
+        'hr' => 'inline',
+        'br' => 'inline',
+        'param' => 'inline',
+        'img' => 'inline',
+        'area' => 'inline',
+        'input' => 'inline',
+        'col' => 'inline'
     ];
     /**
      * Data type declaration
@@ -69,16 +69,23 @@ class HtmlLeaf extends Leaf
      * Constructs object
      * @param Array|array $input
      */
-    public function __construct(array $input = [])
-    {
-        parent::__construct($input);
+    public function __construct(
+        string $kind = 'div',
+        array $attributes = [],
+        mixed $content = '',
+    ) {
+        parent::__construct(
+            kind: $kind,
+            attributes: $attributes,
+            content: $content,
+        );
     }
 
     /**
      * Initialise xml element types.
      * @return void
      */
-    public static function readElements($filename = 'elements.php')
+    public static function readElements($filename = 'elements.php'): void
     {
         FileUtils::assertFileReadable($filename);
         require($filename);
@@ -92,19 +99,22 @@ class HtmlLeaf extends Leaf
     }
 
     /**
-     * Registers new element kind.
+     * Registers new element kind. Supporte formats are: inline, dtd, comment.
+     * Block elements do not need to be registered. This is the default format.
+     *
      * @param  array  $spec Array of the form: ['element kind' => 'format', ...]
      * @return void
      */
-    public static function registerElements(array $elements = ['br'=>'empty'])
-    {
+    public static function registerElements(
+        array $elements = ['br' => 'inline']
+    ): void {
         foreach ($elements as $kind => $type) {
-            if (isset(self::$renderMethods[$type])) {
+            if (array_key_exists($type, self::$renderMethods)) {
                 self::$elements[$kind] = $type;
             } else {
                 $list    = implode(',', array_keys(self::$renderMethods));
-                $message = "Cannot register element kind: '$kind'. 
-                There is no render method for elements of format type $type! 
+                $message = "Cannot register element kind: '$kind'.
+                There is no render method for elements of format type $type!
                 Available render methods are: $list.";
                 throw new InvalidArgumentException($message);
             }
@@ -120,7 +130,7 @@ class HtmlLeaf extends Leaf
     {
         self::$dtd = $dtd;
     }
-    
+
     /**
      * Returns datatype description string.
      * @return [type] [description]
@@ -146,52 +156,54 @@ class HtmlLeaf extends Leaf
     public function __toString()
     {
         // Check element format.
-        if (isset(self::$elements[$this->kind])) {
+
+        if (array_key_exists($this->kind, self::$elements)) {
             //Calls methods: 'dtd()',
-            //               'empty()',
+            //               'inline()',
             //               'comment()'.
             $varfunc = self::$elements[$this->kind];
             return $this->$varfunc();
+        } else {
+            //Calls default render method: block().
+            return $this->block();
         }
-        //Calls default render method: nested().
-        return $this->nested();
     }
-    
+
     /**
      * Renders nested xml elements:  <tag ... /tag> .
      * @return string
      */
-    protected function nested()
+    protected function block()
     {
         return "<$this->kind" . $this->attr2str()
-        . '>' . $this->cont . "</$this->kind>";
+            . '>' . $this->content . "</$this->kind>";
     }
-    
+
     /**
-     * Renders an empty xml element of the form <tag ... /> .
+     * Renders an inline xml element of the form <tag ... /> .
      * @return string
      */
-    protected function empty()
+    protected function inline()
     {
         return "<$this->kind" . $this->attr2str()
-        .'/>';
+            . '/>';
     }
-    
+
     /**
      * Renders a doctype declaration <!DOCTYPE ... > .
      * @return string
      */
     protected function dtd()
     {
-        if ($this->hasCont()) {
+        if ($this->hasContent()) {
             return '<!DOCTYPE' . $this->attr2str()
-            . ' ' . $this->cont . ' >';
+                . ' ' . $this->content . ' >';
         } else {
             return '<!DOCTYPE' . $this->attr2str()
-            . ' ' . self::$dtd . ' >';
+                . ' ' . self::$dtd . ' >';
         }
     }
-    
+
     /**
      * Renders a XML comment element <!-- ... --> .
      * @return string
@@ -199,6 +211,6 @@ class HtmlLeaf extends Leaf
     protected function comment()
     {
         return '<!--' . $this->attr2str()
-        . ' ' . $this->cont . ' -->';
+            . ' ' . $this->content . ' -->';
     }
 }
