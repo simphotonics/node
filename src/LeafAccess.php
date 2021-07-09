@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simphotonics\Dom;
 
 /**
@@ -11,51 +13,82 @@ namespace Simphotonics\Dom;
  */
 interface LeafAccess
 {
-             
-    public function getID();
+    public function id(): string;
 
     /**
      * Returns node kind.
      * @return string
      */
-    public function getKind();
-    
+    public function kind(): string;
+
     /**
-     * Returns attribute array.
+     * Sets the given attributes.
+     *
+     * @param array $attributes: An array of attributes.
+     * @param string $mode: 'reset','add', 'replace'.
+     *
+     * @return self
+     */
+    public function setAttributes(
+        array $attributes,
+        string $mode = 'add'
+    ): self;
+
+    /**
+     * Returns the attributes array.
      * @return array
      */
-    public function getAttr();
+    public function attributes(): array;
 
     /**
-     * Returns true if attribute array is
-     * not empty.
+     * Returns true if $this has the attributes
+     * listed in the input array.
+     *
+     * @param array $attributes
+     * @return bool
+     */
+    public function hasAttributes(array $attributes): bool;
+
+    /**
+     * Returns true if the attributes array of $this is not empty.
+     *
+     * @return bool
+     */
+
+    public function attributesIsNotEmpty(): bool;
+
+    /**
+     * Returns true if the attributes array of $this is empty.
+     *
+     * @return bool
+     */
+
+    public function attributesIsEmpty(): bool;
+
+    /**
+     * Return true the content of this is not empty and false otherwise.
      * @return boolean
      */
-    public function hasAttr();
+    public function hasContent(): bool;
 
     /**
-     * Checks if $this has content.
-     * @return boolean
-     */
-    public function hasCont();
-
-    /**
-     * Returns content of node.
+     * Returns the content of $this converted to string.
      * @return string
      */
-    public function getCont();
+    public function content(): string;
 
     /**
-     * Returns parent of current node.
+     * Returns the parent of $this.
      * @return Simphotonics\Node|NULL
      */
-    public function getParent();
+    public function parent();
 
     /**
      * Always return false since leaves (external
      * nodes) have no child nodes by definition.
+     *
      * @method  hasChildNodes
      * @return  boolean
      */
-    public function hasChildNodes();
+    public function hasChildNodes(): bool;
 }

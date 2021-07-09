@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Simphotonics\Dom;
 
 use Simphotonics\Dom\HtmlLeaf;
@@ -17,35 +20,31 @@ class HtmlTable extends HtmlNode
 {
     /**
      * Number of table columns.
+     *
      * @var  integer
      */
-    private $nCols = 2;
+    private int $nCols = 2;
 
     /**
-     * Flag enabling table headers in first row.
+     * Boolean flag used to enable/disable headers.
+     *
+     * @var bool enableHeader
      */
-    const SET_TABLE_HEADERS = 1;
-
-    /**
-     * Flag disabling table headers in first row.
-     * Instead table data 'td' elements will be used
-     * in the first row.
-     */
-    const NO_TABLE_HEADERS = 0;
+    private bool $enableHeaders;
 
     /**
      * Add class attribute 'alt' to every $rowAlt row.
      * Useful for styling alternate rows.
      * @var  integer
      */
-    private $rowAlt = 2;
+    private int $rowAlt = 2;
 
     /**
      * Omit class attribute 'alt' for the first 'rowOffset'
      * rows.
      * @var  integer
      */
-    private $rowOffset = 2;
+    private int $rowOffset = 2;
 
     /**
      * Array containing original use input data.
@@ -53,30 +52,30 @@ class HtmlTable extends HtmlNode
      * of the table layout.
      * @var  array
      */
-    private $inputData = [];
-    
+    private array $inputData = [];
+
     /**
      * Constructs table object.
      * @method  __construct
-     * @param   array        $inputData  User input data.
-     * @param   integer      $nCols      Number of columns.
-     * @param   integer      $headers    Flag enabling/disabling
-     *                                   table headers.
-     * @param   integer      $rowAlt     Add class alt to every
-     *                                   $altRow row.
-     * @param   integer      $rowOffset  Omit class alt for the first
+     * @param   array    $inputData  User input data.
+     * @param   integer  $nCols      Number of columns.
+     * @param   bool     $enableHeaders    Flag enabling/disabling
+     *                               table headers.
+     * @param   integer  $rowAlt     Add class alt to every
+     *                               $altRow row.
+     * @param   integer  $rowOffset  Omit class alt for the first
      *                                   $rowOffset rows.
      */
     public function __construct(
-        $inputData = [],
-        $nCols = 2,
-        $headersOnOff = self::SET_TABLE_HEADERS,
-        $rowAlt = 2,
-        $rowOffset = 2
+        array $inputData = [],
+        int $nCols = 2,
+        bool $enableHeaders = true,
+        int $rowAlt = 2,
+        int $rowOffset = 2
     ) {
-        parent::__construct(['kind' => 'table']);
+        parent::__construct(kind: 'table');
         $this->nCols = $this->checkNcolsRange($nCols);
-        $this->headersOnOff = $headersOnOff;
+        $this->enableHeaders = $enableHeaders;
         $this->rowAlt = $this->checkRowAltRange($rowAlt);
         $this->rowOffset = $this->checkRowOffsetRange($rowOffset);
         // Store table data.
@@ -84,7 +83,7 @@ class HtmlTable extends HtmlNode
         // Append row nodes to table.
         $this->append($this->makeTableRows());
     }
-  
+
     /**
      * Sets styling parameter $rowAlt.
      * @method  setRowAlt
@@ -96,7 +95,7 @@ class HtmlTable extends HtmlNode
         $this->childNodes = [];
         $this->append($this->makeTableRows());
     }
-  
+
     /**
      * Sets parameter rowOffset used to omit the styling
      * of the first $rowOffset rows.
@@ -109,49 +108,49 @@ class HtmlTable extends HtmlNode
         $this->childNodes = [];
         $this->append($this->makeTableRows());
     }
-  
+
     /**
      * Returns the number of columns.
      * @method  getNumberOfColumns
      * @return  integer              No. of columns.
      */
-    public function getNumberOfColumns()
+    public function numberOfColumns(): int
     {
         return $this->nCols;
     }
-  
+
     /**
      * Changes the table layout to $nCols columns.
      * @method  setNumberOfColumns
      * @param   void
      */
-    public function setNumberOfColumns($nCols)
+    public function setNumberOfColumns($nCols): void
     {
         $this->nCols = $this->checkNcolsRange($nCols);
         $this->childNodes = [];
         $this->append($this->makeTableRows());
     }
-  
+
     /**
      * Appends entries in $inputData to last row.
      * @method  appendToLastRow
      * @param   array      $newInputData  Array containing table data.
      * @return  void
      */
-    public function appendToLastRow(array $newInputData)
+    public function appendToLastRow(array $newInputData): void
     {
         $this->inputData = array_merge($this->inputData, $newInputData);
         $this->childNodes = [];
         $this->append($this->makeTableRows());
     }
-  
+
     /**
      * Appends entries in $newInputData to new table row.
      * @method  appendRow
      * @param   array      $newInputData  Array containg table data.
      * @return  void
      */
-    public function appendRow(array $newInputData)
+    public function appendRow(array $newInputData): void
     {
         // Add dummy entries to fill last row of
         // initial table data
@@ -160,7 +159,7 @@ class HtmlTable extends HtmlNode
         $this->childNodes = [];
         $this->append($this->makeTableRows());
     }
-  
+
     /**
      * Deletes first table row.
      * @method  deleteFirstRow
@@ -170,7 +169,7 @@ class HtmlTable extends HtmlNode
     {
         array_shift($this->childNodes);
     }
-  
+
     /**
      * Deletes row number $rowNumber.
      * Note: The first row is indexed with zero.
@@ -199,7 +198,7 @@ class HtmlTable extends HtmlNode
     {
         array_pop($this->childNodes);
     }
-  
+
     /**
      * Deletes column $colNo and reformats table with
      * remaining table data entries.
@@ -227,7 +226,7 @@ class HtmlTable extends HtmlNode
         $this->childNodes = [];
         $this->append($this->makeTableRows());
     }
-  
+
     /**
      * Wraps input nodes within table data 'td' or table header 'th'
      * elements. Input that is not an instance of HtmlLeaf set as
@@ -242,35 +241,36 @@ class HtmlTable extends HtmlNode
     private function makeTableData(array $inputData)
     {
         // Empty template table elements.
-        $td   = new HtmlNode(['kind' => 'td']);
-        $th   = new HtmlNode(['kind' => 'th']);
-        $span = new HtmlLeaf(['kind' => 'span']);
+        $td   = new HtmlNode(kind: 'td');
+        $th   = new HtmlNode(kind: 'th');
+        $span = new HtmlLeaf(kind: 'span');
         // Add dummy entries to fill last row
         $this->addDummyEntries($inputData);
         // Wrap top level nodes with table data or table header elements.
         $colCount = 1;
         $nodeCount = 1;
         $tableData = [];
-        foreach ($inputData as $node) {
-            $td_tmp = ($nodeCount <= $this->nCols & $this->headersOnOff
-                       ) ? clone $th : clone $td;
+        foreach ($inputData as $chunk) {
+            $td_tmp = ($nodeCount <= $this->nCols & $this->enableHeaders)
+                ? clone $th : clone $td;
             ++$nodeCount;
             // Check if input is of type htmlLeaf
-            if ($node instanceof HtmlLeaf) {
-                $td_tmp->appendChild($node);
+            if ($chunk instanceof HtmlLeaf) {
+               $td_tmp->appendChild($chunk);
             } else {
-                $td_tmp->appendChild($span)->setCont("$node");
+               $td_tmp->appendChild($span)->setContent("$chunk");
             }
+
             // Reset $colCount at end of table row.
             $colCount = ($colCount == $this->nCols + 1) ? 1 : $colCount;
             // Style td and th
-            $td_tmp->setAttr(['class' => 'col' . $colCount]);
+            $td_tmp->setAttributes(['class' => 'col' . $colCount]);
             $tableData[] = $td_tmp;
             ++$colCount;
         }
         return $tableData;
     }
-    
+
     /**
      * Returns an array containing table row 'tr' elements.
      * Note: The number of rows is determined by the number of nodes in
@@ -291,17 +291,17 @@ class HtmlTable extends HtmlNode
         // Set up table content
         $rowCount = 0;
         $altRowCount = 0;
-        $tr = new HtmlNode(['kind' => 'tr']);
+        $tr = new HtmlNode(kind: 'tr');
         foreach ($tableData as $nodesPerRow) {
             $tr_tmp = clone $tr;
             // Set (imported) row attributes
             if (isset($rowAttr[$rowCount])) {
-                $tr_tmp->setAttr($rowAttr[$rowCount]);
+                $tr_tmp->setAttributes($rowAttr[$rowCount]);
             }
             // Label alternative rows
-            if (($rowCount >= $this->rowOffset )) {
+            if (($rowCount >= $this->rowOffset)) {
                 if (($altRowCount % $this->rowAlt) === 0) {
-                    $tr_tmp->setAttr(['class' => 'alt'], 'add');
+                    $tr_tmp->setAttributes(['class' => 'alt'], 'add');
                 }
                 ++$altRowCount;
             }
@@ -343,11 +343,9 @@ class HtmlTable extends HtmlNode
      */
     private function checkNcolsRange($nCols)
     {
-        if (!is_int($nCols)) {
-            throw new InvalidArgumentException('Integer input expected! Found: ' . "<$nCols>");
-        }
         if ($nCols < 1) {
-            throw new InvalidArgumentException('Integer >= 1 expected! Found: ' . $nCols);
+            throw new InvalidArgumentException('Integer >= 1 expected!' .
+                ' Found: ' . $nCols);
         }
         return $nCols;
     }
@@ -357,7 +355,7 @@ class HtmlTable extends HtmlNode
      * @method  addDummyEntries
      * @param   void          &$inputData  Table input data.
      */
-    private function addDummyEntries(&$inputData)
+    private function addDummyEntries(array &$inputData)
     {
         // Calculate no. of remaining nodes in last row.
         $nR = count($inputData) % $this->nCols;
@@ -366,7 +364,7 @@ class HtmlTable extends HtmlNode
         }
         // Add dummy entries to fill the last table row.
         $noDummyEntries = $this->nCols - $nR;
-        for ($i=0; $i < $noDummyEntries; ++$i) {
+        for ($i = 0; $i < $noDummyEntries; ++$i) {
             $inputData[] = '';
         }
     }

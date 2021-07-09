@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simphotonics\Dom\Parser;
 
-use Simphotonics\Utils\ArrayUtils;
+// Simphotonics\Utils\ArrayUtils;
 use Simphotonics\Dom\Leaf;
+use Simphotonics\Dom\Node;
 use Simphotonics\Dom\NodeAccess;
 
 /**
- * @author D Reschner <d.reschner@simphotonics.com>
- * @copyright 2015 Simphotonics
  * Description: Used to render Simphotonics\Dom\Leaf and
  * Simphotonics\Dom\Node objects as php source code.
  * Usage:
@@ -17,47 +18,59 @@ use Simphotonics\Dom\NodeAccess;
  * 2) NodeRenderer::renderRecursive($node) generated the source
  *    code used to create all descendants of $node and $node
  *    itself.
- *
- *
  */
 class NodeRenderer
 {
-    public function __toString()
+    public function __toString(): string
     {
-        return "Object of type " . get_class(self).
-        "used to render Simphotonics\Dom nodes as PHP source code.";
+        return "Object of type " . __CLASS__ .
+            "used to render Simphotonics\Dom nodes as PHP source code.";
     }
-    
+
     /**
-     * Renders input $node as php source code.
+     * Renders an input $node as php source code.
      *
+     * @param         $node A node (or leaf).
      * @param  string $varName Variable name (optional).
+     *
      * @return string          PHP code.
      */
-    public static function render(Leaf $node, $varName = '')
+    public static function render(Leaf|Node $node, $varName = ''): string
     {
         // Validate variable name
-        $varName = ($varName) ? $varName : $node->getID();
-        $varName = self::checkVariableName($varName);
+        $varName = ($varName) ? $varName : $node->id();
+        $varName = self::generateVariableName($varName);
         // Object kind
-        $source = '$'.$varName.' = new \\' . get_class($node) ."([\n" . "  'kind' => '{$node->getKind()}'";
+        $source = '$' . $varName . ' = new \\' . get_class($node) . "(\n" .
+            '  kind: ' . self::quote($node->kind()) . ",\n";
+
         // Object attributes
-        if ($node->hasAttr()) {
-            $source .= ",\n" . self::renderArray($node->getAttr(), 'attr', 1);
+        if ($node->attributesIsNotEmpty()) {
+            $source .= '  attributes: ' . self::renderArray(
+                input: $node->attributes(),
+                name: '',
+                indentLevel: 1
+            );
+            $source .= "\n";
         }
+
         // Object child nodes
-        if ($node->hasChildNodes()) {
+        if ($node instanceof NodeAccess && $node->hasChildNodes()) {
             $source = rtrim($source);
-            $source .= "\n". self::renderChildNodes($node->getChildNodes(), 'child', 1);
+            $source .= "\n  childNodes: " . self::renderChildNodes(
+                $node->childNodes(),
+                'child',
+                1
+            );
         }
         // Content
         $source = rtrim($source);
-        if ($node->hasCont()) {
-            $content = wordwrap($node->getCont(), 90, "\n");
-            $source .= ",\n  'cont' => '$content'";
+        if ($node->hasContent()) {
+            $content = wordwrap($node->content(), 80, "\n");
+            $source .= "\n  'content' => '$content',";
         }
         // Closing brackets;
-        $source .= "\n]); \n";
+        $source .= "\n); \n";
         return $source;
     }
 
@@ -67,7 +80,7 @@ class NodeRenderer
      *
      * @return string
      */
-    public static function renderRecursive(NodeAccess $node)
+    public static function renderRecursive(NodeAccess $node): string
     {
         // Initialize $source
         $source = "\n";
@@ -85,16 +98,16 @@ class NodeRenderer
      * Returns a string representing an array of child nodes.
      * Used in @see $this->export().
      *
-     * @param  integer $indentlevel        [description]
+     * @param  integer $indentlevel  [description]
      * @param  string  $indentString [description]
      * @return [type]                [description]
      */
     private static function renderChildNodes(
         array $childNodes,
-        $name,
-        $indentLevel = 0,
-        $indentString = "  "
-    ) {
+        string $name,
+        int $indentLevel = 0,
+        string $indentString = "  "
+    ): string {
 
         // Set indentation level
         $outerIndent = str_repeat($indentString, $indentLevel);
@@ -104,52 +117,78 @@ class NodeRenderer
         // Body
         foreach ($childNodes as $node) {
             $out .= $innerIndent . '$' .
-            self::checkVariableName($node->getID()) . ",\n";
+                self::generateVariableName($node->id()) . ",\n";
         }
-        $out = rtrim($out, ",\n");   // Eliminate last comma and newline
+        $out = rtrim($out, "\n");   // Eliminate last comma and newline
         // Close bracket
         $out .= "\n$outerIndent] \n";
         return $out;
     }
 
     public static function renderArray(
-        array $arr,
-        $name = 'arr',
-        $indentLevel = 0,
-        $indentString = "  "
-    ) {
+        array $input,
+        string|int $name = '',
+        int $indentLevel = 0,
+        string $indentString = "  ",
+        string $closingCharacter = '',
+    ): string {
         // Check input
-        if (!is_array($arr)) {
-            $arr = [$arr];
+        if (!is_array($input)) {
+            $input = [$input];
         }
         // Set indentation level
         $outerIndent = str_repeat($indentString, $indentLevel);
         $innerIndent = str_repeat($indentString, $indentLevel + 1);
+
+        if (!empty($name)) {
+            if ($indentLevel == 0) {
+                $name = "\$$name";
+            } else {
+                $name = self::quote($name);
+            }
+        }
+        // $name
+        $out = $outerIndent . $name;
         // Opening bracket
-        $out = ($indentLevel) ? $outerIndent . "'$name'=> [\n" : '$' . $name . " = [\n";
+        if (empty($name)) {
+            $out .= "[\n";
+        } else {
+            $out .= ($indentLevel == 0) ? " = [\n" : " => [\n";
+        }
+
         // Typeset inner content
-        foreach ($arr as $key => $var) {
+        foreach ($input as $key => $var) {
             if (is_array($var)) {
-                $out .= self::typesetArrayRecursive($var, $key, $indentLevel + 1);
+                $out .= self::renderArray(
+                    input: $var,
+                    name: $key,
+                    indentLevel: $indentLevel + 2,
+                    indentString: "   "
+                );
             } else {
                 //$var = trim($var);
-                // N.B. We enclose the values in single quotes => All single quotes occurring
+                // N.B. We enclose the values in single quotes =>
+                // All single quotes occurring
                 //      inside the string $var have to be escaped!!!
-                $key = str_replace('\'', '\\\'', $key);
-                $var = str_replace('\'', '\\\'', $var);
-                if (strlen($var) > 90) {
-                    $var = chunk_split($var, 90, "\n");
+
+                $key = is_string($key) ?
+                    str_replace('\'', '\\\'', $key) : $key;
+                $var = is_string($var) ?
+                    str_replace('\'', '\\\'', $var) : $var;
+                if (is_string($var) && strlen($var) > 79) {
+                    $var = chunk_split($var, 79, "\n");
                     $var = rtrim($var);
                 }
-                $out .= $innerIndent . "'$key' => '$var',\n";
+                $out .= $innerIndent .
+                    self::quote($key) . ' => ' . self::quote($var) . ",\n";
             }
         }
         // Eliminate last comma and newline
-        $out = rtrim($out, "\n,");
+        $out = rtrim($out, "\n");
         // Closing bracket
         if ($indentLevel === 0) {
             $out = rtrim($out, ", \n");
-            $out .= "\n];";
+            $out .= "\n].$closingCharacter";
         } else {
             $out .= "\n$outerIndent], \n";
         }
@@ -157,12 +196,34 @@ class NodeRenderer
     }
 
     /**
-     * Check if variable name conforms to syntax constraints.
-     * @method  checkVariableName
-     * @param   string             $name  Variable name
-     * @return  string                    New name
+     * Encloses an input string with double quote characters.
+     * @param  string $val
+     * @param  string $q
+     *
+     * @return
      */
-    private static function checkVariableName($name = '')
+    private static function quote($val = "", $q = "'")
+    {
+        if (is_string($val)) {
+            return $q . $val . $q;
+        } elseif (is_numeric($val)) {
+            return $val;
+        } elseif (is_array($val)) {
+            return " 'array' cant quote recursively! ";
+        } else {
+            return $q . $val . $q;
+        }
+    }
+
+    /**
+     * Check if variable name conforms to syntax constraints.
+     *
+     * @method checkVariableName
+     * @param  string $name Variable name
+     *
+     * @return string      New name
+     */
+    private static function generateVariableName($name = ''): string
     {
         // Starts with a letter
         $pattern = '@^[a-zA-z]+[a-zA-z0-9]*@';
@@ -176,14 +237,14 @@ class NodeRenderer
         }
         // Starts with !--
         if (substr($name, 0, 3) === '!--') {
-            return 'comment'.substr($name, 3);
+            return 'comment' . substr($name, 3);
         }
         // Contains at least one number
         $pattern = '@[0-9]+@';
         if (preg_match($pattern, $name, $matches)) {
-            return 'var'.$matches[0];
+            return 'var' . $matches[0];
         }
         // If all else fails:
-        return 'var'.md5($varname);
+        return 'var' . md5($name);
     }
 }

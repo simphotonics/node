@@ -21,6 +21,24 @@ class Node extends Leaf implements \ArrayAccess, NodeAccess, \RecursiveIterator
     protected $childNodes = [];
 
     /**
+     * Creates a deep copy of $this.
+     * @return void
+     */
+    public function __clone()
+    {
+        // Reset parent node
+        $this->parent = null;
+        // Set id
+        $this->id = $this->kind . ++self::$count;
+        // Clone the child nodes and set the parent node.
+        foreach ($this->childNodes as $key => $node) {
+            $newNode = clone $node;
+            $newNode->parent = $this;
+            $this->childNodes[$key] = $newNode;
+        }
+    }
+
+    /**
      * Prints node hierarchy.
      * @return string
      */

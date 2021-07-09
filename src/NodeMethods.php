@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simphotonics\Dom;
 
 use Simphotonics\Utils\ArrayUtils;
@@ -8,7 +10,6 @@ use InvalidArgumentException;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
- * @copyright 2015 Simphotonics
  * Description: Contains methods shared by Simphotonics\Node
  * and Simphotonics\HtmlNode.
  */
@@ -16,42 +17,33 @@ trait NodeMethods
 {
     /**
      * Constructs node object.
+     *
      * @param array| $input Array of the form:
-     *             $input = [
-     *               'kind' => 'div',
-     *               'attr' => [attributes],
-     *               'cont' => 'text content',
-     *               'child' => Node
-     *             ];
+     *                      $input = [
+     *                      'kind' => 'div',
+     *                      'attr' => [attributes],
+     *                      'cont' => 'text content',
+     *                      'child' => Node
+     *                      ];
      */
-    public function __construct(array $input = [])
-    {
+    public function __construct(
+        string $kind = 'div',
+        array $attributes = [],
+        mixed $content = '',
+        array $childNodes = []
+    ) {
         // Append child nodes
-        if (isset($input['child'])) {
-            $this->append($input['child']);
-        }
-        parent::__construct($input);
-    }
-
-    /**
-     * Creates a deep copy of $this.
-     * @return void
-     */
-    public function __clone()
-    {
-        // Reset parent node
-        $this->parent = null;
-        $this->id = ++self::$count;
-        // Clone the child nodes and set the parent node.
-        foreach ($this->childNodes as $key => $node) {
-            $newNode = clone $node;
-            $newNode->parent = $this;
-            $this->childNodes[$key] = $newNode;
-        }
+        $this->append($childNodes);
+        parent::__construct(
+            kind: $kind,
+            attributes: $attributes,
+            content: $content,
+        );
     }
 
     /**
      * Appends child node.
+     *
      * @param  Simphotonics\Node $input
      * @return Simphotonics\Node Returns appended node.
      */
@@ -63,10 +55,11 @@ trait NodeMethods
 
     /**
      * Append array of child nodes.
-     * @param  Array  $input
+     *
+     * @param  Array $input
      * @return Simphotonics\Node
      */
-    public function append(array $input)
+    public function append(array $input): self
     {
         foreach ($input as $node) {
             $this->childNodes[] = $this->adopt($node);
@@ -76,10 +69,11 @@ trait NodeMethods
 
     /**
      * Prepend child node.
-     * @param  Node   $input
+     *
+     * @param  Node $input
      * @return Node
      */
-    public function prependChild(Leaf $node)
+    public function prependChild(Leaf $node): self
     {
         array_unshift($this->childNodes, $this->adopt($node));
         return $this->first();
@@ -87,7 +81,8 @@ trait NodeMethods
 
     /**
      * Prepend array of child nodes.
-     * @param  Array  $input
+     *
+     * @param  Array $input
      * @return Node
      */
     public function prepend(array $input)
@@ -101,12 +96,13 @@ trait NodeMethods
 
     /**
      * Adopt child node/leaf. Input class is assumed leaf/node!
-     * @param  Leaf       $node
+     *
+     * @param  Leaf $node
      * @return void
      */
-    private function adopt(Leaf $node)
+    private function adopt(Leaf $node): Leaf
     {
-        $newNode = ($this->recursion($node)) ? clone $node : $node;
+        $newNode = ($this->isRecursive($node)) ? clone $node : $node;
         $newNode->parent = $this;
         return $newNode;
     }
@@ -116,10 +112,12 @@ trait NodeMethods
      * Detects recursion by following the anchestors of $this and
      * comparing them to the input node.
      * N.B. Also returns false is input node has a parent node!
+     *
      * @param  Node $node
+     *
      * @return bool
      */
-    private function recursion(Leaf $node)
+    private function isRecursive(Leaf $node): bool
     {
         if ($node->parent) {
             return true;
@@ -144,7 +142,8 @@ trait NodeMethods
     }
 
     /**
-     * Removes node from child list and reset its parent node.
+     * Removes node from child list and sets its parent node to null.
+     *
      * @param  Simphotonics\Node
      * @return bool  Returns true on success.
      */
@@ -168,35 +167,37 @@ trait NodeMethods
 
     /**
      * Replace child node with a new node.
+     *
+     * @param  Node $existingNode
      * @param  Node $newNode
-     * @param  Node $oldNode
      * @return bool  Return true on success.
      */
-    public function replaceChild(Leaf $newNode, Leaf $oldNode)
+    public function replaceChild(Leaf $existingNode, Leaf $newNode)
     {
-        $key = $this->getKey($oldNode);
+        $key = $this->getKey($existingNode);
         if ($key === false) {
             return false;
         }
         $this->childNodes[$key] = $this->adopt($newNode);
-        if (isset($oldNode)) {
-            $oldNode->parent = null;
+        if (isset($existingNode)) {
+            $existingNode->parent = null;
         }
         return true;
     }
 
     /**
-     * Replace $oldNode with $newNode if $oldNode a descendant node.
+     * Replace $existingNode with $newNode if $existingNode a descendant node.
      * N.B. Function scans each child node recursively!
      * If the node is a direct child node use @see $this->replaceChild().
-     * @param  Node   $newNode
-     * @param  Node   $oldNode
+     *
+     * @param  Node $existingNode
+     * @param  Node $newNode
      * @return bool   Return true on success.
      */
-    public function replaceNode(Leaf $newNode, Leaf $oldNode)
+    public function replaceNode(Leaf $existingNode, Leaf $newNode)
     {
         // First scan direct descendants
-        if ($this->replaceChild($newNode, $oldNode)) {
+        if ($this->replaceChild($newNode, $existingNode)) {
             return true;
         }
         // Recursively scan each direct descendant with child nodes
@@ -204,40 +205,44 @@ trait NodeMethods
             if (!$node->hasChildNodes()) {
                 continue;
             }
-            if ($node->replaceNode($newNode, $oldNode)) {
+            if ($node->replaceNode($newNode, $existingNode)) {
                 return true;
             }
         }
         return false;
     }
-    
+
     /**
-     * Insert $newNode before $oldNode.
-     * @param  Node   $newNode
-     * @param  Node   $oldNode
+     * Insert $newNode before $existingNode.
+     *
+     * @param  Node $existingNode
+     * @param  Node $newNode
      * @return bool   Returns true on success.
      */
-    public function insertBefore(Leaf $newNode, Leaf $oldNode)
+    public function insertBefore(Leaf $existingNode, Leaf $newNode)
     {
-        return $this->insert($this->adopt($newNode), $oldNode, 0);
+        return $this->insert($this->adopt($newNode), $existingNode, 0);
     }
-    
+
     /**
-     * Insert $newNode after $oldNode.
+     * Insert $newNode after $existingNode.
+     *
+     * @param  Node $existingNode
      * @param  Node $newNode
-     * @param  Node $oldNode
      * @return bool          Returns true on success.
      */
-    public function insertAfter(Leaf $newNode, Leaf $oldNode)
+    public function insertAfter(Leaf $existingNode, Leaf $newNode)
     {
-        return $this->insert($this->adopt($newNode), $oldNode, 1);
+        return $this->insert($this->adopt($newNode), $existingNode, 1);
     }
-    
+
     /**
-     * Checks if node has child nodes.
+     * Checks if $this has child nodes.
+     *
+     *
      * @return boolean
      */
-    public function hasChildNodes()
+    public function hasChildNodes(): bool
     {
         if (empty($this->childNodes)) {
             return false;
@@ -246,16 +251,17 @@ trait NodeMethods
     }
 
     /**
-     * Remove $oldNode if $oldNode a descentant node.
+     * Remove $existingNode if $existingNode a descendant node.
      * N.B. Function scans each child node recursively!
      * If the node is a direct child node use @see $this->removeChild().
-     * @param  Node   $oldNode
+     *
+     * @param  Node $existingNode
      * @return bool   Return true on success.
      */
-    public function removeNode(Leaf $oldNode)
+    public function removeNode(Leaf $existingNode)
     {
         // First scan direct descendants
-        if ($this->removeChild($oldNode)) {
+        if ($this->removeChild($existingNode)) {
             return true;
         }
         // Recursively scan each direct descendant with child nodes
@@ -263,7 +269,7 @@ trait NodeMethods
             if (!$node->hasChildNodes()) {
                 continue;
             }
-            if ($node->removeNode($oldNode)) {
+            if ($node->removeNode($existingNode)) {
                 return true;
             }
         }
@@ -272,20 +278,22 @@ trait NodeMethods
 
     /**
      * Returns an array containing the child nodes.
+     *
      * @return Array
      */
-    public function getChildNodes()
+    public function childNodes(): array
     {
         return $this->childNodes;
     }
 
     /**
      * Returns an array containing all descendant nodes/leaves.
+     *
      * @param  int $mode @see \RecursiveIteratorIterator takes
-     * values: LEAVES_ONLY, SELF_FIRST, CHILD_FIRST
+     *                   values: self::LEAVES_ONLY, self::SELF_FIRST, self::CHILD_FIRST
      * @return array
      */
-    public function getDescendants($mode = self::SELF_FIRST)
+    public function getDescendants(int $mode = 0): array
     {
         $nodes = [];
         if (!$this->hasChildNodes()) {
@@ -299,17 +307,19 @@ trait NodeMethods
     }
 
     /**
-    * Returns first child.
-    * @return Node
-    */
+     * Returns first child.
+     *
+     * @return Node
+     */
     public function first()
     {
         reset($this->childNodes);
         return current($this->childNodes);
     }
-    
+
     /**
      * Returns last child.
+     *
      * @return Node
      */
     public function last()
@@ -318,9 +328,10 @@ trait NodeMethods
         reset($this->childNodes);
         return $last;
     }
-    
+
     /**
      * Returns number of direct child nodes.
+     *
      * @return int
      */
     public function count()
@@ -330,11 +341,12 @@ trait NodeMethods
 
     /**
      * Returns an array containing child/descendant nodes of a certain 'kind'.
+     *
      * @param  string $kind
-     * @param  bool $flag self::ALL_DESCENDANT_NODES/self::ONLY_CHILD_NODES
+     * @param  bool   $flag self::ALL_DESCENDANT_NODES/self::ONLY_CHILD_NODES
      * @return Array
      */
-    public function getNodesByKind($kind, $flag = self::ALL_NODES)
+    public function getNodesByKind(string $kind, int $flag = 0)
     {
         $nodes = ($flag) ? $this->childNodes : $this->getDescendants();
         $out = [];
@@ -348,19 +360,17 @@ trait NodeMethods
 
     /**
      * Returns an array of nodes/descendants with a given attribute.
-     * @param  string  $attrKey
-     * @param  bool $flag  self::ALL_DESCENDANT_NODES/self::ONLY_CHILD_NODES
-     * @return Array
+     *
+     * @param  string $attrKey
+     * @param  bool   $flag    self::ALL_DESCENDANT_NODES/self::ONLY_CHILD_NODES
+     * @return array
      */
-    public function getNodesByAttrKey($attrKey, $flag = self::ALL_NODES)
+    public function getNodesByAttributeKey($key, int $flag = 0): array
     {
-        if (is_array($attrKey) and !empty($attrKey)) {
-            return $this->getNodesByAttrValue($attrKey, $flag);
-        }
         $out = [];
         $nodes = ($flag) ? $this->childNodes : $this->getDescendants();
         foreach ($nodes as $node) {
-            if (isset($node->attr[$attrKey])) {
+            if (array_key_exists($key, $node->attributes)) {
                 $out[] = $node;
             }
         }
@@ -369,16 +379,17 @@ trait NodeMethods
 
     /**
      * Returns an array of nodes/descendants with a given [attribute => value].
-     * @param  Array  $inputAttr
-     * @param  bool $flag  self::ALL_DESCENDANT_NODES/self::ONLY_CHILD_NODES
+     *
+     * @param  Array $inputAttr
+     * @param  bool  $flag      self::ALL_DESCENDANT_NODES/self::ONLY_CHILD_NODES
      * @return Array
      */
-    public function getNodesByAttrValue(array $inputAttr, $flag = self::ALL_NODES)
+    public function getNodesByAttributeValue(array $inputAttr, int $flag = 0)
     {
         $nodes = ($flag) ? $this->childNodes : $this->getDescendants();
         $out = [];
         foreach ($nodes as $node) {
-            if (array_intersect_assoc($inputAttr, $node->attr) === $inputAttr) {
+            if (array_intersect_assoc($inputAttr, $node->attributes) === $inputAttr) {
                 $out[] = $node;
             }
         }
@@ -387,15 +398,16 @@ trait NodeMethods
 
     /**
      * Returns a child/descendant node with a certain id.
+     *
      * @param  string $id
-     * @param  bool $flag
+     * @param  bool   $flag
      * @return Node|NULL
      */
-    public function getNodeByID($id, $flag = self::ALL_NODES)
+    public function getNodeByID(string $id, int $flag = 0)
     {
         $nodes = ($flag) ? $this->childNodes : $this->getDescendants();
         foreach ($nodes as $node) {
-            if ($node->getID() === $id) {
+            if ($node->id() === $id) {
                 return $node;
             }
         }
@@ -404,6 +416,7 @@ trait NodeMethods
 
     /**
      * Returns a string showing a tree node hierarchy.
+     *
      * @param  bool $mode
      * @return string
      */
@@ -413,23 +426,24 @@ trait NodeMethods
         $blank = (PHP_SAPI == 'cli') ? "   " : " &nbsp &nbsp &nbsp";
         $newline = (PHP_SAPI == 'cli') ? "\n" : "<br/>";
         $parentPre = " | parent: ";
-        $parentID = ($this->getParent() == null) ? "NULL" : $this->getParent()->getID();
-        $out = $newline . $this->getID(). $parentPre. $parentID. $newline;
-            // Create instance of RecursiveIteratorIterator with option SELF_FIRST.
+        $parentID = ($this->parent() == null) ? "NULL" : $this->parent()->id();
+        $out = $newline . $this->id() . $parentPre . $parentID . $newline;
+        // Create instance of RecursiveIteratorIterator with option SELF_FIRST.
         $nodeRIT = new RecursiveIteratorIterator($this, 1);
         foreach ($nodeRIT as $node) {
             $out .= str_repeat(
                 $blank,
                 $nodeRIT->getDepth() + 1
-            ) . $node->getID(). $parentPre.
-            $node->parent->getID(). $newline;
+            ) . $node->id() . $parentPre .
+                $node->parent->id() . $newline;
         }
         return $out;
     }
-    
+
     /**
      * Rearranges the nodes stored in $this->childNodes according to
      * a suitable permutation of array offsets.
+     *
      * @param  Array $permutation
      * @return void
      *
@@ -441,8 +455,8 @@ trait NodeMethods
         $normalOrder = $permutation;
         sort($normalOrder);
         if ($normalOrder !== array_keys($this->childNodes)) {
-            $message = 'Input array does not contain valid permutation. 
-            Found: '. print_r($permutation, true);
+            $message = 'Input array does not contain valid permutation.
+            Found: ' . print_r($permutation, true);
             if (PHP_SAPI != 'cli') {
                 $message = str_replace("\n", '<br/>', $message);
             }
@@ -463,19 +477,20 @@ trait NodeMethods
      * Insert new node at a given offset.
      * Note: It is assumed that $newNode has been 'adopted' in
      * the function calling $this->insert().
-     * @param  node  $newNode
-     * @param  node  $oldNode
+     *
+     * @param  node    $newNode
+     * @param  node    $existingNode
      * @param  integer $offset
      * @return bool  Returns true on success.
      */
-    private function insert(Leaf $newNode, Leaf $oldNode, $offset = 0)
+    private function insert(Leaf $newNode, Leaf $existingNode, $offset = 0)
     {
-        $key = $this->getKey($oldNode);
+        $key = $this->getKey($existingNode);
 
         if ($key === false) {
             return false;
         }
-        
+
         $offset += ArrayUtils::key2offset($this->childNodes, $key);
         array_splice($this->childNodes, $offset, 0, [$newNode]);
         return true;
@@ -483,6 +498,7 @@ trait NodeMethods
 
     /**
      * Returns a valid key if $node is found in nodes.
+     *
      * @param  node $node
      * @return int        Valid element key or false.
      */
@@ -494,18 +510,20 @@ trait NodeMethods
     // ===================================================
     // Functions Required by Interface: \RecursiveIterator
     // ===================================================
-    
+
     /**
      * Returns current node.
+     *
      * @return node
      */
     public function current()
     {
         return current($this->childNodes);
     }
-    
+
     /**
      * Returns the key to the current element.
+     *
      * @return int
      */
     public function key()
@@ -515,6 +533,7 @@ trait NodeMethods
 
     /**
      * Moves internal pointer to next position.
+     *
      * @return void
      */
     public function next()
@@ -524,6 +543,7 @@ trait NodeMethods
 
     /**
      * Moves to previous position.
+     *
      * @return void
      */
     public function prev()
@@ -533,6 +553,7 @@ trait NodeMethods
 
     /**
      * Rewinds the iterator to the first node.
+     *
      * @return void
      */
     public function rewind()
@@ -542,6 +563,7 @@ trait NodeMethods
 
     /**
      * Checks if the current key is valid.
+     *
      * @return bool
      */
     public function valid()
@@ -551,6 +573,7 @@ trait NodeMethods
 
     /**
      * Returns the NodeRecursiveIterator object of the child node.
+     *
      * @return Simphotonics\Node
      */
     public function getChildren()
@@ -561,6 +584,7 @@ trait NodeMethods
     /**
      * Checks if current child node (pointed to by the internal pointer)
      * has child nodes.
+     *
      * @return boolean
      */
     public function hasChildren()
@@ -572,12 +596,15 @@ trait NodeMethods
     // Functions Required by Interface: Array Access
     // =============================================
     /**
-     * Appends node at a given offset.
-     * @param  int $offset
+     * Sets node at a given offset (overwriting existing nodes).
+     * If the offset does not
+     * exist the node will be appended after the last child node.
+     *
+     * @param  int  $offset
      * @param  Node $node
      * @return void
      */
-    public function offsetSet($offset, $node)
+    public function offsetSet($offset, $node): void
     {
         if (isset($this->childNodes[$offset])) {
             $this->childNodes[$offset] = $this->adopt($node);
@@ -588,6 +615,7 @@ trait NodeMethods
 
     /**
      * Checks if given offset is set.
+     *
      * @param  int $offset
      * @return bool
      */
@@ -598,6 +626,7 @@ trait NodeMethods
 
     /**
      * Unsets elements at given offset.
+     *
      * @param  int $offset
      * @return void
      */
@@ -608,12 +637,13 @@ trait NodeMethods
 
     /**
      * Returns element at given offset.
+     *
      * @param  int $offset
      * @return node
      */
     public function offsetGet($offset)
     {
         return isset($this->childNodes[$offset]) ?
-        $this->childNodes[$offset] : null;
+            $this->childNodes[$offset] : null;
     }
 }

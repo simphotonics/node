@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simphotonics\Dom;
 
 use Simphotonics\Dom\NodeAccess;
@@ -16,7 +18,10 @@ use Simphotonics\Dom\NodeAccess;
  * E.g.: <span> </span> => 'span'.
  */
 
-class HtmlNode extends HtmlLeaf implements \ArrayAccess, NodeAccess, \RecursiveIterator
+class HtmlNode extends HtmlLeaf implements
+    \ArrayAccess,
+    NodeAccess,
+    \RecursiveIterator
 {
     use NodeMethods;
 
@@ -26,20 +31,37 @@ class HtmlNode extends HtmlLeaf implements \ArrayAccess, NodeAccess, \RecursiveI
      */
     protected $childNodes = [];
 
-    // ===============
-    // PRIVATE METHODS
-    // ===============
+    /**
+     * Creates a deep copy of $this.
+     * @return void
+     */
+    public function __clone()
+    {
+        // Reset parent node
+        $this->parent = null;
+        // Set id
+        $this->id = $this->kind . ++self::$count;
+        // Clone the child nodes and set the parent node.
+        foreach ($this->childNodes as $key => $node) {
+            $newNode = clone $node;
+            $newNode->parent = $this;
+            $this->childNodes[$key] = $newNode;
+        }
+    }
 
     /**
      * Renders a nested XML element with opening and closing tag.
      * @return string
      */
-    protected function nested()
+    public function __toString()
     {
-        return "<$this->kind" . $this->attr2str().
-        '>' . $this->cont . $this->childObj2str() . "</$this->kind>";
+        return "<$this->kind" . $this->attr2str() .
+            '>' . $this->content . $this->childObj2str() . "</$this->kind>";
     }
 
+    // ===============
+    // PRIVATE METHODS
+    // ===============
     /**
      * Returns a string representation of child nodes.
      * @param  string $glue The separator, defaults to " ".
@@ -47,14 +69,15 @@ class HtmlNode extends HtmlLeaf implements \ArrayAccess, NodeAccess, \RecursiveI
      */
     private function childObj2str()
     {
-        if (empty($this->childNodes)) {
+        if ($this->hasChildNodes()) {
+            // Iterate over childList
+            $out = '';
+            foreach ($this->childNodes as $child) {
+                $out .= "$child";
+            }
+            return $out;
+        } else {
             return '';
         }
-        // Iterate over childList
-        $string = '';
-        foreach ($this->childNodes as $child) {
-            $string.="$child";
-        }
-        return $string;
     }
 }

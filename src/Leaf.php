@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simphotonics\Dom;
 
 use Simphotonics\Dom\LeafAccess;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
- * @copyright 2015 Simphotonics
+ * @copyright 2021 Simphotonics
  * Description: Implements methods available to external
  * nodes (leaves). It is the base class of Simphotonics\Node.
  */
@@ -16,39 +18,39 @@ class Leaf implements LeafAccess
      * Object count (used to set the node id).
      * @var integer
      */
-    protected static $count = 1;
+    protected static int $count = 0;
 
     /**
      * Node id.
-     * @var int
+     * @var string
      */
-    protected $id = 0;
+    protected string $id;
 
     /**
      * Stores node attributes.
      * @var array
      */
-    protected $attr = [];
+    protected $attributes = [];
 
     /**
      * Node content.
      * @var string
      */
-    protected $cont = '';
+    protected $content = '';
 
     /**
      * Element kind
      * @var string
      */
-    protected $kind = 'div';
+    protected string $kind = 'div';
 
     /**
      * Parent node
      * @var Simphotonics/Node
      */
     protected $parent = null;
-    
-    
+
+
     /**
      * Constructs node object. Expected input is an array of the
      * form $input = ['kind' => 'node-kind','attr' => [attributes],
@@ -57,22 +59,28 @@ class Leaf implements LeafAccess
      * @param Array $input
      *
      */
-    public function __construct(array $input = [])
-    {
-        // Assign kind
-        if (isset($input['kind'])) {
-            $this->kind = $input['kind'];
-        }
-        // Assign attributes
-        if (isset($input['attr'])) {
-            $this->attr = (is_array($input['attr'])) ? $input['attr'] : [];
-        }
-        // Assign content
-        if (isset($input['cont'])) {
-            $this->cont = $input['cont'];
-        }
+    public function __construct(
+        string $kind = 'default',
+        array $attributes = [],
+        string $content = ''
+    ) {
+        $this->kind = $kind;
+        $this->attributes = $attributes;
+        $this->content = $content;
         // Set id
-        $this->id = ++self::$count;
+        $this->id = $this->kind . ++self::$count;
+    }
+
+    /**
+     * Creates a deep copy of $this.
+     * @return void
+     */
+    public function __clone()
+    {
+        // Reset parent node
+        $this->parent = null;
+        // Set id
+        $this->id = $this->kind . ++self::$count;
     }
 
     /**
@@ -80,48 +88,48 @@ class Leaf implements LeafAccess
      * @param string $kind
      * @return Simphotonics\Node  Enables chaining of commands!
      */
-    public function setKind(string $kind)
+    public function setKind(string $kind): self
     {
         $this->kind = $kind;
         return $this;
     }
-    
+
     /**
      * Returns node kind.
      * @return string
      */
-    public function getKind()
+    public function kind(): string
     {
         return $this->kind;
     }
-    
+
     /**
      * Sets or modifies attributes array.
      * @param Array  $attr Expected form: ['attr' => 'attrValue'].
      * @param string $mode Valid modes are: reset,add,replace.
      * @return Simphotonics\Node
      */
-    public function setAttr(array $attr, $mode = 'add')
+    public function setAttributes(array $attr, $mode = 'add'): self
     {
         switch ($mode) {
             case 'add':
                 // New and old attributes are merged.
                 foreach ($attr as $key => $var) {
-                    if (array_key_exists($key, $this->attr)) {
-                        $this->attr[$key] .= ' ' . $var;
+                    if (array_key_exists($key, $this->attributes)) {
+                        $this->attributes[$key] .= ' ' . $var;
                     } else {
-                        $this->attr[$key] = $var;
+                        $this->attributes[$key] = $var;
                     }
                 }
                 return $this;
-            break;
+                break;
             case 'replace':
                 // Old attributes are replaced by new ones.
                 foreach ($attr as $key => $var) {
-                    $this->attr[$key] = $var;
+                    $this->attributes[$key] = $var;
                 }
                 return $this;
-            break;
+                break;
             default:
         }
         return $this;
@@ -131,30 +139,44 @@ class Leaf implements LeafAccess
      * Resets attributes array.
      * @return void
      */
-    public function resetAttr()
+    public function resetAttributes(): self
     {
-        $this->attr = [];
+        $this->attributes = [];
         return $this;
     }
 
     /**
      * Returns attribute array.
-     * @return Array
+     *
+     * @return array
      */
-    public function getAttr()
+    public function attributes(): array
     {
-        return $this->attr;
+        return $this->attributes;
     }
 
     /**
-     * Returns true if attribute array is
-     * not empty.
+     * Returns true if the attributes array is
+     * empty.
+     *
      * @return boolean
      */
-    public function hasAttr()
+    public function attributesIsEmpty(): bool
     {
-        return !empty($this->attr);
+        return empty($this->attributes);
     }
+
+    /**
+     * Returns true if the attributes array is not
+     * empty.
+     *
+     * @return boolean
+     */
+    public function attributesIsNotEmpty(): bool
+    {
+        return !empty($this->attributes);
+    }
+
 
     /**
      * Checks is attribute[$key] is set to $value.
@@ -164,80 +186,83 @@ class Leaf implements LeafAccess
      * @param  string  $value
      * @return boolean
      */
-    public function hasAttrValue($key, $value)
+    public function hasAttribute($key, $value): bool
     {
-        if (!isset($this->attr[$key])) {
+        if (!isset($this->attributes[$key])) {
             return false;
         }
-        if (substr_count($this->attr[$key], $value)) {
+        if (substr_count($this->attributes[$key], $value)) {
             return true;
         }
         return false;
     }
-    
+
     /**
-     * Checks for exact match of entries in attributes array.
-     * @param  Array   $attrArr
+     * Returns true if the attributes in the input array match attributes
+     * of $this.
+     *
+     * @param  array   $attributes
+     *
      * @return boolean
      */
-    public function hasAttrValues(array $attrArr)
+    public function hasAttributes(array $attributes): bool
     {
-        if (array_intersect_assoc($attrArr, $this->attr) === $attrArr) {
+        if (array_intersect_assoc($attributes, $this->attributes) === $attributes) {
             return true;
         }
         return false;
     }
-    
+
     /**
-     * Unsets entry $this->attr[$key].
+     * Unsets entry $this->attributes[$key].
      * @param  int $key
      * @return Simphotonics\Leaf
      */
-    public function removeAttr($key)
+    public function removeAttribute($key): self
     {
-        if (isset($this->attr[$key])) {
-            unset($this->attr[$key]);
-            
+        if (isset($this->attributes[$key])) {
+            unset($this->attributes[$key]);
         }
         return $this;
     }
-    
+
     /**
-     * Sets string content of node.
+     * Sets content of leaf. The argument $content is first converted to string.
+     *
      * @param string $cont
      * @return $this
      */
-    public function setCont($cont)
+    public function setContent(mixed $content): self
     {
-        $this->cont = "$cont";
+        $this->content = "$content";
         return $this;
     }
-    
+
     /**
      * Returns content of node.
      * @return string
      */
-    public function getCont()
+    public function content(): string
     {
-        return $this->cont;
+        return $this->content;
     }
 
     /**
      * Checks if $this has content.
      * @return boolean
      */
-    public function hasCont()
+    public function hasContent(): bool
     {
-        return !empty($this->cont);
+        return !empty($this->content);
     }
-    
+
     /**
      * Returns node id.
-     * @return int
+     * @return string
      */
-    public function getID()
+    public function id(): string
     {
-        return $this->kind.$this->id;
+        return $this->id;
     }
 
     /**
@@ -246,20 +271,20 @@ class Leaf implements LeafAccess
      * @param  int $length Number of digits in node UID.
      * @return string
      */
-    public function showID()
+    public function showID(): string
     {
         $newline = (PHP_SAPI == 'cli') ? "\n" : "<br/>";
         $parentID = " | parent: ";
-        $parentID .= ($this->getParent() == null) ? "NULL" :
-        $this->getParent()->getID();
-        return  $this->getID() . $parentID . $newline;
+        $parentID .= ($this->parent() == null) ? "NULL" :
+            $this->parent()->id();
+        return  $this->id() . $parentID . $newline;
     }
-    
+
     /**
      * Returns parent of current node.
      * @return Simphotonics\Node|NULL
      */
-    public function getParent()
+    public function parent()
     {
         return $this->parent;
     }
@@ -293,9 +318,20 @@ class Leaf implements LeafAccess
      *
      * @return boolean
      */
-    public function hasChildNodes()
+    public function hasChildNodes(): bool
     {
         return false;
+    }
+
+    public function __toString()
+    {
+        // Discriminate between CLI and HTML
+        $blank = (PHP_SAPI == 'cli') ? "   " : " &nbsp &nbsp &nbsp";
+        $newline = (PHP_SAPI == 'cli') ? "\n" : "<br/>";
+        $parentPre = " | parent: ";
+        $parentID = ($this->parent() == null) ? "NULL" : $this->parent()->id();
+        $out = $newline . $this->id() . $parentPre . $parentID . $newline;
+        return $out;
     }
 
     /**
@@ -303,10 +339,10 @@ class Leaf implements LeafAccess
      * @param  string $glue
      * @return string
      */
-    protected function attr2str($glue = " ")
+    protected function attr2str($glue = " "): string
     {
         $string = '';
-        foreach ($this->attr as $key => $var) {
+        foreach ($this->attributes as $key => $var) {
             //Enclose with double quote characters
             $var = self::quote($var);
             $string .= $glue . $key . "=" . $var;
@@ -318,7 +354,8 @@ class Leaf implements LeafAccess
      * Encloses an input string with double quote characters.
      * @param  string $val
      * @param  string $q
-     * @return string
+     *
+     * @return
      */
     private static function quote($val = "", $q = "\"")
     {

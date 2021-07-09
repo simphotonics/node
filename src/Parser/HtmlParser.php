@@ -1,9 +1,11 @@
 <?php
+
 namespace Simphotonics\Dom\Parser;
 
 use Simphotonics\Dom\HtmlLeaf;
 use Simphotonics\Dom\HtmlNode;
 use Simphotonics\Utils\FileUtils;
+use Simphotonics\Dom\NodeAccess;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -117,7 +119,7 @@ class HtmlParser
     {
         $pattern = '@[\s]*<!DOCTYPE([^>]*)>@';
         $out = preg_replace_callback($pattern, function ($matches) {
-            return '<!DOCTYPE'.$matches[1].'!>';
+            return '<!DOCTYPE' . $matches[1] . '!>';
         }, $source);
         if ($out === null) {
             return '';
@@ -133,56 +135,56 @@ class HtmlParser
         foreach ($matches as $match) {
             // Get format
             switch ($match['ctag']) {
-                // EMPTY node
+                    // EMPTY node
                 case '/>':
                     $this->formatInfo[$match['kind']] = 'empty';
-                    $nodes[] = new HtmlLeaf([
-                        'kind' => $match['kind'],
-                        'attr' => self::getAttr($match['attr'])
-                    ]);
+                    $nodes[] = new HtmlLeaf(
+                        kind: $match['kind'],
+                        attributes: self::attributes($match['attr'])
+                    );
                     break;
-                // DOCTYPE node
+                    // DOCTYPE node
                 case '!>':
-                    $nodes[] = new HtmlLeaf([
-                        'kind' => '!DOCTYPE',
-                        'cont' => trim($match['attr'])
-                    ]);
+                    $nodes[] = new HtmlLeaf(
+                        kind:'!DOCTYPE',
+                        content: trim($match['attr'])
+                    );
                     break;
-                // COMMENT node
+                    // COMMENT node
                 case '-->':
-                    $nodes[] = new HtmlLeaf([
-                        'kind' => $match['kind'],
-                        'cont' => trim($match['attr'])
-                    ]);
+                    $nodes[] = new HtmlLeaf(
+                        kind:$match['kind'],
+                        content:trim($match['attr'])
+                    );
                     break;
-                // BLOCK node
-                // Note: Calls parseNodes recursively
+                    // BLOCK node
+                    // Note: Calls parseNodes recursively
                 default:
-                    $nodes[] = new HtmlNode([
-                        'kind' => $match['kind'],
-                        'attr' => self::getAttr($match['attr']),
-                        'cont' => trim($match['text'])
-                    ]);
+                    $nodes[] = new HtmlNode(
+                        kind:$match['kind'],
+                        attributes: self::attributes($match['attr']),
+                        content:trim($match['text'])
+                    );
                     if (strlen(trim($match['childNodes']))) {
                         $childNodes = $this->parseNodes($match['childNodes']);
                         if (count($childNodes)) {
                             end($nodes)->append($childNodes);
                         }
                     }
-                    
+
                     break;
             }
         }
         return $nodes;
     }
-  
+
     /**
      * Parsed string containig element attributes.
      * @method  getAttr
      * @param   string   $attrString  Input string
      * @return  array                 Element attributes.
      */
-    private static function getAttr($attrString = '')
+    private static function attributes($attrString = '')
     {
         $attrString = str_replace('"', '', $attrString);
         $words = explode(' ', $attrString);
@@ -218,12 +220,12 @@ class HtmlParser
          * @var  string
          */
         $multiMatch = '
-        [\s]*        
+        [\s]*
         < #Capture tag kind (\1)
         (?<kind>[a-z0-9]+|!--|!DOCTYPE)
         #Capture tag attributes (\2)
         #Note the positive lookbehind and lookahead to force
-        #     capturing of comment elements. 
+        #     capturing of comment elements.
         (?<attr>(?(?<=!--)[\s\S]*?(?=-->)|[\s\S]*?))
         (?<ctag>
             #Capture closing tag EMPTY elements (\3)
@@ -234,14 +236,14 @@ class HtmlParser
             #see self::prepareSource()
             !>|
             #Capture <tag{>...}<\tag> of BLOCK elements (\3)
-            > 
+            >
             #Capture text content of BLOCK element (\4)
             #  Note: Only text after the closing bracket and
             #         before any nested nodes is captured!
             (?<text>[^<]*)
-            (?: 
+            (?:
                 #Capture nested nodes (\5)
-                (?<childNodes> 
+                (?<childNodes>
                     (?:
                         #COND I
                         [^<]*?|
@@ -249,16 +251,16 @@ class HtmlParser
                         <\!\-\-.*?\-\->|
                         #EMPTY node within BLOCK element. COND III
                         <[a-z]+[^>]*/>|
-                        #Start recursion if COND I-III do not match. 
+                        #Start recursion if COND I-III do not match.
                         (?R)
                     )*
                 )
-                # Closing tag of BLOCK elements 
+                # Closing tag of BLOCK elements
                 </\1>
             )
         )';
-        $pattern = '@'.$multiMatch.'@xm';
-           preg_match_all($pattern, $source, $matches, PREG_SET_ORDER);
+        $pattern = '@' . $multiMatch . '@xm';
+        preg_match_all($pattern, $source, $matches, PREG_SET_ORDER);
         return $matches;
     }
 }

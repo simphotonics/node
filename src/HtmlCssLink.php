@@ -1,4 +1,5 @@
 <?php
+
 namespace Simphotonics\Dom;
 
 use Simphotonics\Dom\HtmlLeaf;
@@ -28,20 +29,21 @@ class HtmlCssLink extends HtmlLeaf
 
     public function __construct($cssFile = 'Index')
     {
-        $this->cssFile = (func_num_args() > 0 ) ?
-                  func_get_arg(0) : WebUtils::baseURI();
+        $this->cssFile = (func_num_args() > 0) ?
+            func_get_arg(0) : WebUtils::baseURI();
         if (trim($this->cssFile) == false) {
             $this->cssFile = 'Index';
         }
-        parent::__construct([
-            'kind' => 'link',
-            'attr' => [
+        parent::__construct(
+            kind: 'link',
+            attributes: [
                 'rel' => 'stylesheet',
                 'type' => 'text/css',
                 'href' => &$this->path,
                 'media' => 'all'
-                ]
-        ]);
+
+            ]
+        );
     }
 
     /**
@@ -62,7 +64,7 @@ class HtmlCssLink extends HtmlLeaf
      */
     public function __toString()
     {
-        $this->path = $this->cssFolder. '/'. $this->cssFile.'.css';
+        $this->path = $this->cssFolder . '/' . $this->cssFile . '.css';
         return parent::__toString();
     }
 }

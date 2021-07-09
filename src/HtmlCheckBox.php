@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Simphotonics\Dom;
 
 use Simphotonics\Dom\HtmlLeaf;
@@ -11,7 +12,7 @@ use Simphotonics\Dom\HtmlNode;
  *
  */
 
-class HtmlCheckBox extends HtmlNode
+class HtmlCheckBox extends HtmlLeaf
 {
     /**
      * Constant used to enable the insertion of
@@ -24,7 +25,7 @@ class HtmlCheckBox extends HtmlNode
      * a break element after each checkbox element.
      */
     const LINE_BREAK_OFF    = 0;  // Input Flag
-    
+
     /**
      * Constructs object.
      * @method __construct
@@ -33,34 +34,37 @@ class HtmlCheckBox extends HtmlNode
      */
     public function __construct($name = 'name', $value = 'value')
     {
-        parent::__construct([
-        'kind' => 'input',
-        'attr' => [
-            'name' => $name,
-            'value' => $value,
-            'type' => 'checkbox']
-        ]);
+        parent::__construct(
+            kind: 'input',
+            attributes: [
+                'name' => $name,
+                'value' => $value,
+                'type' => 'checkbox'
+            ]
+        );
     }
-        
+
     /**
      * Returns an array of HtmlCheckBox objects.
      * Note: Each HtmlCheckBox is appended to a span element of
      * type HtmlNode. The user has the option to include a linebreak
      * element after each span element.
      * @method getCheckBoxes
+     *
      * @param  array      $input: ['checkBoxName1'
      *                            => 'checkBoxValue1, ...]
      * @param  int        $lineBreak Flag enabling linebreak elements.
+     *
      * @return array      Array of HtmlLeaf/HtmlNode objects.
      */
-    public static function getCheckBoxes(
+    public static function generateCheckBoxes(
         array $input,
         $lineBreak = self::LINE_BREAK_ON
     ) {
         $out = [];
-        $span = new HtmlNode(['kind' => 'span']);
-        $br = new HtmlLeaf(['kind' => 'br']);
-       
+        $span = new HtmlNode(kind: 'span');
+        $br = new HtmlLeaf(kind:'br');
+
         foreach ($input as $name => $value) {
             $box = new \Simphotonics\Dom\HtmlCheckBox($name, $value);
             $out[] = clone $span;

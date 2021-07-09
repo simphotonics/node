@@ -1,4 +1,5 @@
 <?php
+
 namespace Simphotonics\Dom;
 
 use Simphotonics\Dom\HtmlLeaf;
@@ -29,7 +30,7 @@ class HtmlTitle extends HtmlLeaf
      * character in each title word upper case.
      */
     const FIRST_TO_UPPER_CASE = false;
-    
+
     /**
      * Constructs HtmlTitle object
      * @param string $domainName  Prefix used to generate web page title.
@@ -46,18 +47,18 @@ class HtmlTitle extends HtmlLeaf
                 $titleString = self::getTitle($flag);
                 break;
             case 1:
-                $titleString = $domainName." - ".self::getTitle($flag);
+                $titleString = $domainName . " - " . self::getTitle($flag);
                 break;
             default:
-                $titleString = $domainName." - ".$titleString;
+                $titleString = $domainName . " - " . $titleString;
                 break;
         }
-        parent::__construct([
-        'kind' => 'title',
-        'cont' => $titleString
-        ]);
+        parent::__construct(
+            kind: 'title',
+            content: $titleString
+        );
     }
-    
+
     /**
      * Generates web page title.
      * @param  string $filename [description]
@@ -80,12 +81,12 @@ class HtmlTitle extends HtmlLeaf
     {
         // Set web site title to 'Home' for uri index (index.php) or ''.
         if (strtolower($title) == 'index' or $title == '') {
-            return ($flag) ? 'HOME': 'Home';
+            return ($flag) ? 'HOME' : 'Home';
         }
         //
         $pattern = '@
             (
-                # Zero width match. 
+                # Zero width match.
                 # Credit: http://www.rexegg.com/regex-lookarounds.html#camelinsert
                 (?<=[a-z])(?=[A-Z])|
                 # Split at underscore
@@ -94,7 +95,7 @@ class HtmlTitle extends HtmlLeaf
                 -
             )@x';
         $titleString = preg_replace($pattern, ' ', $title);
-        
+
         // Apply format flags
         return ($flag) ? strtoupper($titleString) : ucwords($titleString);
     }

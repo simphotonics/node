@@ -3,8 +3,7 @@
 namespace Simphotonics\Dom\Parser;
 
 use Simphotonics\Dom\Leaf;
-use Simphotonics\Utils\FileUtils;
-use InvalidArgumentException;
+
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -17,7 +16,7 @@ use InvalidArgumentException;
  * The element 'kind' denotes the element tag without the brackets.
  * E.g.: <br/> => 'br', <span> </span> => 'span',
  * The element 'format' refers to the formatting of the xhtml element.
- * E.g.: <br/>              => 'empty' (elements without content),
+ * E.g.: <br/>              => 'inline' (elements without content),
  *       <span> ... </span> => 'block' (element with content),
  *       <!-- ... -->       => 'comment',
  *       <DOCTYPE! ... >    => 'dtd'.
@@ -32,22 +31,22 @@ class DtdLeaf extends Leaf
      * Constructs object
      * @param Array|array $input
      */
-    public function __construct(array $input = [])
+    public function __construct(string $name = '', string $kind = 'default',
+    array $attributes = [], string $content = '',  )
     {
-        parent::__construct($input);
-        if (isset($input['name'])) {
-            $this->name = $input['name'];
-        }
+        parent::__construct($kind, $attributes, $content);
+            $this->name = $name;
+
     }
 
-    /**
-     * Return elements array.
-     * @return array
-     */
-    public static function getElements()
-    {
-        return self::$elements;
-    }
+    // /**
+    //  * Return elements array.
+    //  * @return array
+    //  */
+    // public static function getElements()
+    // {
+    //     return self::$elements;
+    // }
 
     public function getName()
     {

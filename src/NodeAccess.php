@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simphotonics\Dom;
 
 use Simphotonics\Dom\LeafAccess;
@@ -41,18 +43,18 @@ interface NodeAccess extends LeafAccess
      * to return all node, external nodes (leaves) first.
      */
     const CHILD_FIRST = 2;
-    
+
     /**
      * Returns an array containing the child nodes.
      * @return array
      */
-    public function getChildNodes();
-    
+    public function childNodes(): array;
+
     /**
      * Returns an array containing all descendant nodes/leaves.
      * @param  int $mode @see \RecursiveIteratorIterator takes
-     * values: LEAVES_ONLY, SELF_FIRST, CHILD_FIRST
+     * values: self::LEAVES_ONLY, self::SELF_FIRST, self::CHILD_FIRST
      * @return array
      */
-    public function getDescendants($mode = self::SELF_FIRST);
+    public function getDescendants(int $mode = 0): array;
 }

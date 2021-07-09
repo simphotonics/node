@@ -1,8 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Simphotonics\Dom\Parser;
 
 use Simphotonics\Dom\Parser\DtdLeaf;
 use Simphotonics\Utils\FileUtils;
+use Simphotonics\Dom\NodeAccess;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -18,7 +22,7 @@ class DtdParser
      * Entities extracted from parsed DTD document.
      * @var  array
      */
-    private $entities  = [];
+    private array $entities  = [];
 
     /**
      * Array containing attribute lists.
@@ -26,15 +30,15 @@ class DtdParser
      *
      * @var  array
      */
-    private $attrLists = [];
+    private array $attrLists = [];
 
     /**
      * Array containing extracted elements:
      * Format: $elements['name'] => 'value';
      * @var  array
      */
-    private $elements  = [];
-   
+    private array $elements  = [];
+
     /**
      * DTD source code
      * @var  string
@@ -55,13 +59,13 @@ class DtdParser
             $this->resolveEntities();
         }
     }
-    
+
     /**
      * Returns an array containing DTD entities.
      * @method  getEntities
      * @return  array       Entities.
      */
-    public function getEntities()
+    public function getEntities(): array
     {
         return $this->entities;
     }
@@ -71,7 +75,7 @@ class DtdParser
      * @method  getElements
      * @return  array        Elements.
      */
-    public function getElements()
+    public function getElements(): array
     {
         return $this->elements;
     }
@@ -81,7 +85,7 @@ class DtdParser
      * @method  getAttrLists
      * @return  array        Attribute lists.
      */
-    public function getAttrLists()
+    public function getAttrLists(): array
     {
         return $this->attrLists;
     }
@@ -92,7 +96,7 @@ class DtdParser
      * @param   string   $filename  Path to the DTD file.
      * @return  void
      */
-    public function loadDtd($filename = 'xhtml.dtd')
+    public function loadDtd($filename = 'xhtml.dtd'): void
     {
         $this->source = FileUtils::loadFile($filename);
         $this->parse();
@@ -100,13 +104,14 @@ class DtdParser
     }
 
     /**
-     * Write PHP source code that generates element nodes
+     * Writes PHP source code that generates element nodes
      * to file.
      * @method  exportNodes
      * @param   string       $filename  Path to file on file system.
-     * @return  int|false               Number of bits writen or false on failure.
+     * 
+     * @return  int               Number of bits writen. Throws on failure.
      */
-    public function exportNodes($filename = 'dtdNodes.php')
+    public function exportNodes($filename = 'dtdNodes.php'): int
     {
         // Render top nodes
         $source = '';
@@ -121,13 +126,13 @@ class DtdParser
     }
 
     /**
-     * Write PHP source code that generates an array containig empty
+     * Writes PHP source code that generates an array containig empty
      * elements.
      * @method  exportEmptyElements
      * @param   string               $filename  Valid path to file.
      * @return  int|false                       No. of bits written or false.
      */
-    public function exportEmptyElements($filename = 'emptyElements.php')
+    public function exportEmptyElements(string $filename = 'emptyElements.php')
     {
         $elements = $this->getEmptyElements();
         $source = NodeRenderer::renderArray($elements, 'elements');
@@ -160,13 +165,13 @@ class DtdParser
     public function getElementNodes()
     {
         foreach ($this->elements as $name => $value) {
-            $nodes[$name] = new DtdLeaf([
-                'name' => $name,
-                'kind' => '!ELEMENT',
-                'cont' => $value,
-                'attr' => isset($this->attrLists[$name]) ?
+            $nodes[$name] = new DtdLeaf(
+                name: $name,
+                kind: '!ELEMENT',
+                content: $value,
+                attributes: isset($this->attrLists[$name]) ?
                     $this->parseAttrList($this->attrLists[$name]) : []
-                ]);
+            );
         }
         return $nodes;
     }
@@ -183,16 +188,17 @@ class DtdParser
         foreach ($matches as $match) {
             // Get format
             switch ($match['kind']) {
-                // ENTITY node
+                    // ENTITY node
                 case '!ENTITY':
                     // Trim quotation marks and white space.
-                    $this->entities['%'.$match['name'].';'] = trim($match['value'], " \t\n\r\0\x0B\"");
+                    $this->entities['%' . $match['name'] . ';'] =
+                        trim($match['value'], " \t\n\r\0\x0B\"");
                     break;
-                // ATTLIST node
+                    // ATTLIST node
                 case '!ATTLIST':
                     $this->attrLists[$match['name']] = $match['value'];
                     break;
-                // ELEMENT node
+                    // ELEMENT node
                 case '!ELEMENT':
                     $this->elements[$match['name']] = $match['value'];
                     break;
@@ -200,9 +206,8 @@ class DtdParser
                     break;
             }
         }
-        
     }
- 
+
     /**
      * Parses string containig element attributes and returns
      * an array of the form:
@@ -214,7 +219,8 @@ class DtdParser
      */
     private static function parseAttrList($attrString = '')
     {
-        $pattern = '@[\s]*(?<name>[\S]*)[\s]*(?<dataType>[\S]*)[\s]*(?<defaultValue>[\S]*)@';
+        $pattern = '@[\s]*(?<name>[\S]*)[\s]*'
+            . '(?<dataType>[\S]*)[\s]*(?<defaultValue>[\S]*)@';
         $pattern = '@
             [\s]*
             (?<name>[\S]*)
@@ -230,7 +236,7 @@ class DtdParser
             if ($match['name'] == '') {
                 continue;
             }
-             $attr[$match['name']] = [$match['dataType'],$match['defaultValue']];
+            $attr[$match['name']] = [$match['dataType'], $match['defaultValue']];
         }
         return $attr;
     }
@@ -244,7 +250,7 @@ class DtdParser
      */
     private static function parseInput($source = '')
     {
-        $multiMatch = '[\s]*< 
+        $multiMatch = '[\s]*<
         #Capture tag kind (\1)
         (?<kind>!ENTITY|
                 !ELEMENT|
@@ -257,8 +263,8 @@ class DtdParser
         [\s]*\%?[\s]*(?<name>[\w\.]*)
         [\s]*(?<value>[^>]*?)>
         )';
-        $pattern = '@'.$multiMatch.'@xm';
-           preg_match_all($pattern, $source, $matches, PREG_SET_ORDER);
+        $pattern = '@' . $multiMatch . '@xm';
+        preg_match_all($pattern, $source, $matches, PREG_SET_ORDER);
         return $matches;
     }
 
@@ -277,10 +283,10 @@ class DtdParser
         foreach ($inputArr as $name => $value) {
             $pattern = '@(%[\w\.]*;)@';
             $inputArr[$name] =
-            preg_replace_callback($pattern, function ($matches) {
-                return (isset($this->entities[$matches[0]])) ?
-                        $this->entities[$matches[0]]: $matches[0];
-            }, $value);
+                preg_replace_callback($pattern, function ($matches) {
+                    return (isset($this->entities[$matches[0]])) ?
+                        $this->entities[$matches[0]] : $matches[0];
+                }, $value);
         }
     }
 

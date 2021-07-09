@@ -1,4 +1,5 @@
 <?php
+
 namespace Simphotonics\Dom;
 
 use Simphotonics\Dom\HtmlNavigator;
@@ -22,12 +23,21 @@ class HtmlDropDownNavigator extends HtmlNavigator
      * @method  __construct
      * @param   array        $input  Array containg node specs.
      */
-    public function __construct($input = ['kind' => 'div'])
-    {
-        parent::__construct($input);
+    public function __construct(
+        string $kind = 'div',
+        array $attributes = [],
+        string $content = '',
+        array $childNodes = [],
+    ) {
+        parent::__construct(
+            kind: $kind,
+            attributes: $attributes,
+            content: $content,
+            childNodes: $childNodes,
+        );
         $this->sortButtons();
     }
-    
+
     private function sortButtons()
     {
         // Get drop down menu
@@ -35,16 +45,16 @@ class HtmlDropDownNavigator extends HtmlNavigator
         if (!$dropDownMenu instanceof HtmlNode) {
             return;
         }
-        if (!$dropDownMenu->hasAttrValue('class', 'dropDownMenu')) {
+        if (!$dropDownMenu->hasAttribute('class', 'dropDownMenu')) {
             return;
         }
-      
+
         // Reorder list items
         $liFirst = $dropDownMenu[0];
         $liHere  = $this->selfAnchor->parent;
         if ($liHere !== $liFirst) {
             $dropDownMenu->removeChild($liHere);
-            $dropDownMenu->insertBefore($liHere, $liFirst);
+            $dropDownMenu->insertBefore($liFirst, $liHere);
         }
     }
 }
