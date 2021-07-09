@@ -2,6 +2,8 @@
 
 namespace Simphotonics\Dom\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 use Simphotonics\Dom\HtmlLeaf;
 use Simphotonics\Dom\HtmlNode;
 use Simphotonics\Dom\Parser\HtmlParser;
@@ -12,36 +14,36 @@ use Simphotonics\Dom\Parser\HtmlParser;
  * Description: Tests Simphotonics\HtmlTitle using URI's with
  * different format.
  */
-class HtmlParserTest extends \PHPUnit_Framework_TestCase
+class HtmlParserTest extends TestCase
 {
     public function testEmpty()
     {
         $img = '<img class="img" href="https://simphotonics.com/image/img1.jpg"/>';
-        $source = '<br/><br/>'.$img;
+        $source = '<br/><br/>' . $img;
         $p = new HtmlParser($source);
         $this->assertEquals(3, count($p->getNodes()));
-        $this->assertEquals($img, ''.$p->getNodes()[2]);
+        $this->assertEquals($img, '' . $p->getNodes()[2]);
         $this->assertEquals('empty', $p->getFormatInfo()['img']);
     }
 
     public function testDTD()
     {
         $dtd = '<!DOCTYPE html5 >';
-        $source = $dtd.'<html><body><p><br/></p></body></html>';
+        $source = $dtd . '<html><body><p><br/></p></body></html>';
         $p = new HtmlParser($source);
         $this->assertEquals(2, count($p->getNodes()));
-        $this->assertEquals($dtd, ''.$p->getNodes()[0]);
+        $this->assertEquals($dtd, '' . $p->getNodes()[0]);
         $this->assertEquals('empty', $p->getFormatInfo()['br']);
     }
 
     public function testComment()
     {
         $comment = '<!-- This is comment <<<>> <div/  <> /> -->';
-        $source = $comment.'<html><body><p>
+        $source = $comment . '<html><body><p>
         <!-- This is comment within a paragraph! --><br/></p></body></html>';
         $p = new HtmlParser($source);
         $this->assertEquals(2, count($p->getNodes()));
-        $this->assertEquals($comment, ''.$p->getNodes()[0]);
+        $this->assertEquals($comment, '' . $p->getNodes()[0]);
     }
 
     public function testBlock()
@@ -52,8 +54,7 @@ class HtmlParserTest extends \PHPUnit_Framework_TestCase
         // The notation below works since HtmlNode implements the ArrayAccess interface!
         $this->assertEquals(
             'Content of paragraph!',
-            $p->getNodes()[0][0][0]->getCont()
+            $p->getNodes()[0][0][0]->content()
         );
-       
     }
 }

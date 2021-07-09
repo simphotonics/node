@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simphotonics\Dom\Tests;
+
+use PHPUnit\Framework\TestCase;
 
 use Simphotonics\Dom\HtmlNode;
 
@@ -9,9 +13,8 @@ use Simphotonics\Dom\HtmlNode;
  * @copyright 2015 Simphotonics
  * Description: Tests Simphotonics\HtmlNode methods.
  */
-class HtmlNodeTest extends \PHPUnit_Framework_TestCase
+class HtmlNodeTest extends TestCase
 {
-
     /**
      * Test instance of HtmlNode.
      * @var Simphotonics\Dom\HtmlNode
@@ -30,20 +33,51 @@ class HtmlNodeTest extends \PHPUnit_Framework_TestCase
      */
     private static $n1;
 
-    public function __construct()
+    public static function setUpBeforeClass(): void
     {
         self::$n = new HtmlNode();
-        self::$n0 = new HtmlNode(['attr' => ['class' => 'main']]);
-        self::$n1 = new HtmlNode(['attr' => ['class' => 'main bold']]);
-        self::$n->append([self::$n0,self::$n1]);
+        self::$n0 = new HtmlNode(kind: 'p', attributes: ['class' => 'main']);
+        self::$n1 = new HtmlNode(
+            kind: 'tr',
+            attributes: ['class' => 'main bold']
+        );
+        self::$n->append([self::$n0, self::$n1]);
     }
-           
+
     public function testRenderBlock()
     {
-        self::$n->setCont('This is a block element!');
+
+        $n = new HtmlNode(
+            attributes: ['class' => 'main'],
+            content: ('This is a block element!')
+        );
+        $p = new HtmlNode(kind: 'p', content: 'Content of p');
+        $n->appendChild($p);
         $this->assertEquals(
-            '<div>This is a block element!<div class="main"></div><div class="main bold"></div></div>',
-            ''.self::$n
+            '<div class="main">This is a block element!'
+                . '<p>Content of p</p></div>',
+            '' . $n
+        );
+    }
+
+    public function testSimpleBlockElement()
+    {
+        $n = new HtmlNode(kind: 'div', content: 'node content');
+        $this->assertEquals('<div>node content</div>', "$n");
+    }
+
+    public function testNestedBlockElement()
+    {
+        $n = new HtmlNode(
+            kind: 'div',
+            content: 'node content',
+            attributes: ['class' => 'main']
+        );
+        $n->appendChild(new HtmlNode(kind: 'p', attributes: ['id' => 'id89']));
+        $this->assertTrue($n->hasChildNodes());
+        $this->assertEquals(
+            '<div class="main">node content<p id="id89"></p></div>',
+            "$n"
         );
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Simphotonics\Dom\Tests;
 
-use Simphotonics\Dom\Parser\DtdLeaf;
+use PHPUnit\Framework\TestCase;
 use Simphotonics\Dom\Parser\DtdParser;
 
 /**
@@ -11,13 +11,13 @@ use Simphotonics\Dom\Parser\DtdParser;
  * Description: Tests Simphotonics\HtmlTitle using URI's with
  * different format.
  */
-class HtmlDomTest extends \PHPUnit_Framework_TestCase
+class DtdParserTest extends TestCase
 {
-    /**
-     * DTD source
-     * @var  string
-     */
-    private static $source = ' <!ENTITY % ContentType "CDATA">
+  /**
+   * DTD source
+   * @var  string
+   */
+  private static $source = ' <!ENTITY % ContentType "CDATA">
                         <!ENTITY % LanguageCode "NMTOKEN">
                         <!ENTITY % URI "CDATA">
                         <!ENTITY % coreattrs
@@ -90,66 +90,66 @@ class HtmlDomTest extends \PHPUnit_Framework_TestCase
                           content     CDATA          #REQUIRED
                           scheme      CDATA          #IMPLIED
                           >';
-    /**
-     * Parser instance
-     * @var  Simphotonics\Dom\Parser\DtdParser
-     */
-    private static $p;
+  /**
+   * Parser instance
+   * @var  Simphotonics\Dom\Parser\DtdParser
+   */
+  private static $p;
 
-    public function __construct()
-    {
-        self::$p = new DtdParser(self::$source);
-    }
+  public static function setUpBeforeClass(): void
+  {
+    self::$p = new DtdParser(self::$source);
+  }
 
-    public function testGetEntities()
-    {
-        $entities = self::$p->getEntities();
-        $this->assertEquals(
-            '(script|style|meta|link|object)*',
-            $entities['%head.misc;']
-        );
-    }
+  public function testGetEntities()
+  {
+    $entities = self::$p->getEntities();
+    $this->assertEquals(
+      '(script|style|meta|link|object)*',
+      $entities['%head.misc;']
+    );
+  }
 
-    public function testGetElements()
-    {
-        $elements = self::$p->getElements();
-        $this->assertEquals(
-            '((script|style|meta|link|object)*,
+  public function testGetElements()
+  {
+    $elements = self::$p->getElements();
+    $this->assertEquals(
+      '((script|style|meta|link|object)*,
                              ((title, (script|style|meta|link|object)*, (base, (script|style|meta|link|object)*)?) |
                               (base, (script|style|meta|link|object)*, (title, (script|style|meta|link|object)*))))',
-            $elements['head']
-        );
-        $this->assertEquals(
-            '(head, body)',
-            $elements['html']
-        );
-    }
+      $elements['head']
+    );
+    $this->assertEquals(
+      '(head, body)',
+      $elements['html']
+    );
+  }
 
-    public function testGetEmptyElements()
-    {
-        $emptyElements = self::$p->getEmptyElements();
-        $expectedArr = [
-        'base' => 'empty',
-        'meta' => 'empty'
-        ];
-        $this->assertEquals(
-            $expectedArr,
-            $emptyElements
-        );
-    }
+  public function testGetEmptyElements()
+  {
+    $emptyElements = self::$p->getEmptyElements();
+    $expectedArr = [
+      'base' => 'empty',
+      'meta' => 'empty'
+    ];
+    $this->assertEquals(
+      $expectedArr,
+      $emptyElements
+    );
+  }
 
-    public function testGetElementNodes()
-    {
-        $nodes = self::$p->getElementNodes();
-        
-        $this->assertEquals(
-            "#FIXED 'http://www.w3.org/1999/xhtml'",
-            $nodes['html']->getAttr()['xmlns'][1]
-        );
+  public function testGetElementNodes()
+  {
+    $nodes = self::$p->getElementNodes();
 
-        $this->assertEquals(
-            ['CDATA',"#FIXED 'http://www.w3.org/1999/xhtml'"],
-            $nodes['html']->getAttr()['xmlns']
-        );
-    }
+    $this->assertEquals(
+      "#FIXED 'http://www.w3.org/1999/xhtml'",
+      $nodes['html']->attributes()['xmlns'][1]
+    );
+
+    $this->assertEquals(
+      ['CDATA', "#FIXED 'http://www.w3.org/1999/xhtml'"],
+      $nodes['html']->attributes()['xmlns']
+    );
+  }
 }

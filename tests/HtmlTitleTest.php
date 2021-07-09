@@ -2,6 +2,8 @@
 
 namespace Simphotonics\Dom\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 use Simphotonics\Dom\HtmlTitle;
 
 /**
@@ -10,7 +12,7 @@ use Simphotonics\Dom\HtmlTitle;
  * Description: Tests Simphotonics\HtmlTitle using URI's with
  * different format.
  */
-class HtmlTitleTest extends \PHPUnit_Framework_TestCase
+class HtmlTitleTest extends TestCase
 {
     /**
      * Simulate home uri

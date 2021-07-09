@@ -2,6 +2,8 @@
 
 namespace Simphotonics\Dom\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 use Simphotonics\Dom\HtmlLeaf;
 use Simphotonics\Dom\HtmlNode;
 use Simphotonics\Dom\HtmlNavigator;
@@ -12,22 +14,31 @@ use Simphotonics\Dom\HtmlNavigator;
  * Description: Tests Simphotonics\HtmlNavigator using URI's with
  * different format.
  */
-class HtmlNavigatorTest extends \PHPUnit_Framework_TestCase
+class HtmlNavigatorTest extends TestCase
 {
     public function testHome()
     {
         $_SERVER['REQUEST_URI'] = '/';
         $nav = self::initNavigator();
-        $this->assertEquals('<div id="nav" class="has-shadow"><ul id="mainMenu"><li class="here"><a href="/">HOME</a></li><li><a href="/services">SERVICES</a></li></ul></div>', "$nav");
+        $this->assertEquals('<div id="nav" class="has-shadow">' .
+            '<ul id="mainMenu"><li class="here">' .
+            '<a href="/">HOME</a></li><li>' .
+            '<a href="/services">SERVICES</a></li></ul></div>', "$nav");
     }
 
     public function testServices()
     {
         $_SERVER['REQUEST_URI'] = '/services';
         $nav = self::initNavigator();
-        $this->assertEquals('<div id="nav" class="has-shadow"><ul id="mainMenu"><li><a href="/">HOME</a></li><li class="here"><a href="/services">SERVICES</a></li></ul></div>', "$nav");
+        $this->assertEquals(
+            '<div id="nav" class="has-shadow">'
+                . '<ul id="mainMenu"><li><a href="/">HOME</a></li>'
+                . '<li class="here"><a href="/services">SERVICES</a>' .
+                '</li></ul></div>',
+            "$nav"
+        );
     }
-    
+
     /**
      * Initialises HtmlNavigator object.
      * @method  initNavigator
@@ -36,30 +47,25 @@ class HtmlNavigatorTest extends \PHPUnit_Framework_TestCase
     private static function initNavigator()
     {
         // Templates
-        $L = new HtmlLeaf([
-        'kind' => 'a'
-        ]);
-        $B = new HtmlNode([
-        'kind' => 'li',
-        'child' => [$L]
-        ]);
+        $L = new HtmlLeaf(kind: 'a');
+        $B = new HtmlNode(kind: 'li', childNodes: [$L]);
         // Home
         $B_home = clone $B;
-        $B_home[0]->setAttr(['href' => '/'])->setCont('HOME');
+        $B_home[0]->setAttributes(['href' => '/'])->setContent('HOME');
         // Services
         $B_services = clone $B;
-        $B_services[0]->setAttr(['href' => '/services'])->setCont('SERVICES');
+        $B_services[0]->setAttributes(['href' => '/services'])
+            ->setContent('SERVICES');
 
-        $Menu = new HtmlNode([
-        'kind' => 'ul',
-        'attr' => ['id' => 'mainMenu'],
-        ]);
+        $Menu = new HtmlNode(kind:'ul',
+            attributes: ['id' => 'mainMenu'],
+        );
 
         $Menu->append([$B_home, $B_services]);
-        return new HtmlNavigator([
-        'kind' => 'div',
-        'attr' => ['id' => 'nav','class' => 'has-shadow'],
-        'child' => [$Menu]
-        ]);
+        return new HtmlNavigator(
+            kind:'div',
+                attributes:['id' => 'nav', 'class' => 'has-shadow'],
+                childNodes:[$Menu]
+        );
     }
 }

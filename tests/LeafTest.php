@@ -2,6 +2,8 @@
 
 namespace Simphotonics\Dom\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 use Simphotonics\Dom\Leaf;
 use Simphotonics\Dom\Node;
 
@@ -11,7 +13,7 @@ use Simphotonics\Dom\Node;
  * Description: Tests methods of class \Simphotonics\Dom\Leaf.
  */
 
-class LeafTest extends \PHPUnit_Framework_TestCase
+class LeafTest extends TestCase
 {
     /**
      * Test instance of leaf
@@ -19,66 +21,69 @@ class LeafTest extends \PHPUnit_Framework_TestCase
      */
     private static $l;
 
-    public function __construct()
+    public static function setUpBeforeClass(): void
     {
-        self::$l = new Leaf([
+        self::$l = new Leaf(...[
             'kind' => 'div',
-            'attr' => ['class' => 'main emph','id' => 'div1'],
-            'cont' => 'This is a test!'
-            ]);
+            'attributes' => ['class' => 'main emph', 'id' => 'div1'],
+            'content' => 'This is a test!'
+        ]);
     }
 
     public function testSetKind()
     {
         self::$l->setKind('span');
-        $this->assertEquals('span', self::$l->getKind());
+        $this->assertEquals('span', self::$l->kind());
         self::$l->setKind('div');
     }
 
-    public function testSetAttr()
+    public function testSetContent()
+    {
+        $l = new Leaf();
+        $this->assertFalse($l->hasContent());
+        $l->setContent('the content');
+        $this->assertTrue($l->hasContent());
+        $this->assertEquals($l->content(), 'the content');
+    }
+
+    public function testSetAttributes()
     {
         // Test mode 'add'
-        self::$l->setAttr(['class' => 'bold'], 'add');
-        $this->assertEquals('main emph bold', self::$l->getAttr()['class']);
-        
+        self::$l->setAttributes(['class' => 'bold'], 'add');
+        $this->assertEquals('main emph bold', self::$l->attributes()['class']);
+
         // Test mode 'replace'
-        self::$l->setAttr(['class' => 'main emph'], 'replace');
-        $this->assertEquals('main emph', self::$l->getAttr()['class']);
+        self::$l->setAttributes(['class' => 'main emph'], 'replace');
+        $this->assertEquals('main emph', self::$l->attributes()['class']);
     }
 
-    public function testHasAttr()
+    public function testAttributeIsEmpty()
     {
-        $this->assertEquals(true, self::$l->hasAttr());
-        self::$l->resetAttr();
-        $this->assertEquals(false, self::$l->hasAttr());
-        self::$l->setAttr(['class' => 'main emph','id' => 'div1']);
+        $this->assertTrue(self::$l->attributesIsNotEmpty());
+        self::$l->resetAttributes();
+        $this->assertTrue(self::$l->attributesIsEmpty());
+        self::$l->setAttributes(['class' => 'main emph', 'id' => 'div1']);
     }
 
-    public function testHasAttrValue()
+    public function testHasAttributes()
     {
-        $this->assertEquals(true, self::$l->hasAttrValue('class', 'main'));
-        $this->assertEquals(false, self::$l->hasAttrValue('class', 'bold'));
-    }
-
-    public function testHasAttrValues()
-    {
-        $this->assertEquals(true, self::$l->hasAttrValues(
-            ['class' => 'main emph']
-        ));
+        $this->assertTrue(self::$l->hasAttributes(['class' => 'main emph']));
+        $this->assertFalse(self::$l->hasAttributes(['class' => 'bold']));
     }
 
     public function testShowID()
     {
         $newline = (PHP_SAPI == 'cli') ? "\n" : "<br/>";
-        $expected = self::$l->getID(). " | parent: NULL". $newline;
+        $expected = self::$l->id() . " | parent: NULL" . $newline;
         $this->assertEquals($expected, self::$l->showID());
     }
 
     public function testGetAncestor()
     {
-        $a = new Leaf(['kind' => 'a']);
+        $a = new Leaf(kind: 'a');
         $div = new Node();
-        $body = new Node(['kind' => 'body']);
+        $div->appendChild($a);
+        $body = new Node(kind: 'body');
         $body->appendChild($div)->appendChild($a);
         $ancestor = $a->getAncestor(2);
         $this->assertEquals($body, $ancestor);

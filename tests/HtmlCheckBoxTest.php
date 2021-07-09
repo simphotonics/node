@@ -2,7 +2,10 @@
 
 namespace Simphotonics\Dom\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 use Simphotonics\Dom\HtmlCheckBox;
+use Simphotonics\Dom\HtmlLeaf;
 use Simphotonics\Dom\HtmlNode;
 
 /**
@@ -11,13 +14,22 @@ use Simphotonics\Dom\HtmlNode;
  * Description: Tests Simphotonics\HtmlTitle using URI's with
  * different format.
  */
-class HtmlCheckBoxTest extends \PHPUnit_Framework_TestCase
+class HtmlCheckBoxTest extends TestCase
 {
-    public function __construct()
+    public static function setUpBeforeClass(): void
     {
-        // Register 'empty' elements just in case they are not registered yet.
-        HtmlCheckBox::registerElements(['br' => 'empty','input' => 'empty']);
+        // Register 'inline' elements just in case they are not registered yet.
+        HtmlCheckBox::registerElements(['br' => 'inline', 'input' => 'inline']);
     }
+
+    public function testRegisterElements()
+    {
+        $this->assertTrue(array_key_exists(
+            'input',
+            HtmlLeaf::getElements()
+        ));
+    }
+
 
     public function testCheckBox()
     {
@@ -31,10 +43,12 @@ class HtmlCheckBoxTest extends \PHPUnit_Framework_TestCase
     public function testGetCheckBoxes()
     {
         $div = new HtmlNode();
-        $checkBoxes = HtmlCheckBox::getCheckBoxes(
-            ['name1' => 'value1','name2' => 'value2']
+        $checkBoxes = HtmlCheckBox::generateCheckBoxes(
+            ['name1' => 'value1', 'name2' => 'value2']
         );
         $div->append($checkBoxes);
-        $this->assertEquals('<div><span><input name="name1" value="value1" type="checkbox"/></span><br/><span><input name="name2" value="value2" type="checkbox"/></span></div>', "$div");
+        $this->assertEquals('<div><span><input name="name1" value="value1" ' .
+            'type="checkbox"/></span><br/><span><input name="name2" value="value2" '
+            . 'type="checkbox"/></span></div>', "$div");
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Simphotonics\Dom\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 use Simphotonics\Dom\HtmlCssLink;
 
 /**
@@ -10,7 +12,7 @@ use Simphotonics\Dom\HtmlCssLink;
  * Description: Tests Simphotonics\HtmlCssLink using URI's with
  * different format.
  */
-class HtmlCssLinkTest extends \PHPUnit_Framework_TestCase
+class HtmlCssLinkTest extends TestCase
 {
     /**
      * Simulate home uri
@@ -40,11 +42,12 @@ class HtmlCssLinkTest extends \PHPUnit_Framework_TestCase
      * Uri containig query
      * @var string
      */
-    private $queryUri    = "https:://simphotonics.com/post?url=http://google.com/&amp;message=This%20is%20my%20post";
+    private $queryUri    = "https:://simphotonics.com/post?'.
+    'url=http://google.com/&amp;message=This%20is%20my%20post";
 
-    public function __construct()
+    public static function setUpBeforeClass(): void
     {
-        HtmlCssLink::registerElements(['link' => 'empty']);
+        HtmlCssLink::registerElements(['link' => 'inline']);
     }
 
     public function testEmptyUri()
@@ -76,7 +79,8 @@ class HtmlCssLinkTest extends \PHPUnit_Framework_TestCase
     {
         $cssLink = new HtmlCssLink('about-us');
         $cssLink->setCssFolder('cssFolder');
-        $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\" href=\"cssFolder/about-us.css\" media=\"all\"/>", "$cssLink");
+        $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\"".
+        " href=\"cssFolder/about-us.css\" media=\"all\"/>", "$cssLink");
     }
 
     /**
@@ -88,6 +92,7 @@ class HtmlCssLinkTest extends \PHPUnit_Framework_TestCase
     {
         $_SERVER['REQUEST_URI'] = $uri;
         $cssLink = new HtmlCssLink();
-        $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\" href=\"$expectedPath\" media=\"all\"/>", "$cssLink");
+        $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\"".
+        " href=\"$expectedPath\" media=\"all\"/>", "$cssLink");
     }
 }

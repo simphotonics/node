@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simphotonics\Dom\Tests;
+
+use PHPUnit\Framework\TestCase;
 
 use Simphotonics\Dom\HtmlLeaf;
 use Simphotonics\Dom\HtmlNode;
@@ -12,50 +16,57 @@ use Simphotonics\Dom\HtmlDropDownNavigator;
  * Description: Tests Simphotonics\HtmlNavigator using URI's with
  * different format.
  */
-class HtmlDropDownNavigatorTest extends \PHPUnit_Framework_TestCase
+class HtmlDropDownNavigatorTest extends TestCase
 {
     public function testEntrySorting()
     {
         $_SERVER['REQUEST_URI'] = '/services';
         $nav = self::initDropDownNavigator();
-        $this->assertEquals('<div id="nav" class="has-shadow"><ul class="dropDownMenu"><li class="here"><a href="/services">SERVICES</a></li><li><a href="/">HOME</a></li><li><a href="/about-us">ABOUT-US</a></li></ul></div>', "$nav");
+        $this->assertEquals('<div id="nav" class="has-shadow">' .
+            '<ul class="dropDownMenu"><li class="here">' .
+            '<a href="/services">SERVICES</a></li><li><a href="/">HOME</a>' .
+            '</li><li><a href="/about-us">ABOUT-US</a></li></ul></div>', "$nav");
     }
-    
+
     /**
-     * Initialises HtmlNavigator object.
+     * Initialises the HtmlDropDownNavigator object.
+     * 
      * @method  initNavigator
-     * @return  void
+     *
+     * @return  \Simphotonics\Dom\HtmlDropDownNavigator
      */
-    private static function initDropDownNavigator()
+    private static function initDropDownNavigator(): HtmlDropDownNavigator
     {
         // Templates
-        $L = new HtmlLeaf([
-        'kind' => 'a'
-        ]);
-        $B = new HtmlNode([
-        'kind' => 'li',
-        'child' => [$L]
-        ]);
+        $L = new HtmlLeaf(
+            kind: 'a'
+        );
+        $B = new HtmlNode(
+            kind: 'li',
+            childNodes: [$L]
+        );
         // Home
         $B_home = clone $B;
-        $B_home[0]->setAttr(['href' => '/'])->setCont('HOME');
+        $B_home[0]->setAttributes(['href' => '/'])->setContent('HOME');
         // Services
         $B_services = clone $B;
-        $B_services[0]->setAttr(['href' => '/services'])->setCont('SERVICES');
+        $B_services[0]->setAttributes(['href' => '/services'])
+            ->setContent('SERVICES');
         // About-Us
         $B_about = clone $B;
-        $B_about[0]->setAttr(['href' => '/about-us'])->setCont('ABOUT-US');
- 
-        $Menu = new HtmlNode([
-        'kind' => 'ul',
-        'attr' => ['class' => 'dropDownMenu'],
-        ]);
+        $B_about[0]->setAttributes(['href' => '/about-us'])
+            ->setContent('ABOUT-US');
+
+        $Menu = new HtmlNode(
+            kind: 'ul',
+            attributes: ['class' => 'dropDownMenu'],
+        );
 
         $Menu->append([$B_home, $B_services, $B_about]);
-        return new HtmlDropDownNavigator([
-        'kind' => 'div',
-        'attr' => ['id' => 'nav','class' => 'has-shadow'],
-        'child' => [$Menu]
-        ]);
+        return new HtmlDropDownNavigator(
+            kind: 'div',
+            attributes: ['id' => 'nav', 'class' => 'has-shadow'],
+            childNodes: [$Menu]
+        );
     }
 }

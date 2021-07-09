@@ -2,6 +2,8 @@
 
 namespace Simphotonics\Dom\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 use Simphotonics\Dom\HtmlSelect;
 
 /**
@@ -10,45 +12,65 @@ use Simphotonics\Dom\HtmlSelect;
  * Description: Tests Simphotonics\HtmlTitle using URI's with
  * different format.
  */
-class HtmlSelectTest extends \PHPUnit_Framework_TestCase
+class HtmlSelectTest extends TestCase
 {
 
-    private $select = null;
-
-    public function __construct()
-    {
-        $this->select = new HtmlSelect(
-            'country',
-            ['GB' => 'Great Britain',
-            'USA' => 'United States of America'],
-            'GB'
-        );
-    }
+    private static HtmlSelect $select;
 
     public function testInitOptions()
     {
-         $this->assertEquals(
-             '<select name="country" id="country"><option value="GB" selected="selected">Great Britain</option><option value="USA">United States of America</option></select>',
-             "$this->select"
-         );
+        $select = new HtmlSelect(
+            name: 'country',
+            options: [
+                'GB' => 'Great Britain',
+                'USA' => 'United States of America'
+            ],
+            defaultOption: 'GB'
+        );
+        $this->assertEquals(
+            '<select name="country" id="country">'.
+                '<option value="GB" selected="selected">Great Britain</option>'.
+                '<option value="USA">United States of America</option></select>',
+            $select . ''
+        );
     }
 
     public function testClearDefaultOption()
     {
-        $this->select->clearDefaultOption();
+        $select = new HtmlSelect(
+            'country',
+            [
+                'GB' => 'Great Britain',
+                'USA' => 'United States of America'
+            ],
+            'GB'
+        );
+        $select->clearDefaultOption();
         $this->assertEquals(
-            '<select name="country" id="country"><option value="GB">Great Britain</option><option value="USA">United States of America</option></select>',
-            "$this->select"
+            '<select name="country" id="country">' .
+                '<option value="GB">Great Britain</option>'
+                . '<option value="USA">United States of America</option></select>',
+            $select . ''
         );
     }
 
     public function testSetDefaultOption()
     {
-       
-        $this->select->setDefaultOption('USA');
+        $select = new HtmlSelect(
+            'country',
+            [
+                'GB' => 'Great Britain',
+                'USA' => 'United States of America'
+            ],
+            'GB'
+        );
+        $select->setDefaultOption('USA');
         $this->assertEquals(
-            '<select name="country" id="country"><option value="GB">Great Britain</option><option value="USA" selected="selected">United States of America</option></select>',
-            "$this->select"
+            '<select name="country" id="country">' .
+                '<option value="GB">Great Britain</option>' .
+                '<option value="USA" selected="selected">'
+                . 'United States of America</option></select>',
+            $select . ''
         );
     }
 }
