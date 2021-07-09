@@ -2,3 +2,12 @@
 
 # Vendor directory
 vendor
+
+# PHPUnit cache directory
+.phpunit*
+
+# composer lock file
+composer.lock*
+
+# ide
+.idea*
