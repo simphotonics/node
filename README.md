@@ -1,4 +1,5 @@
 # Simphotonics Dom
+[![PHP Composer](https://github.com/simphotonics/dom/actions/workflows/php.yml/badge.svg)](https://github.com/simphotonics/dom/actions/workflows/php.yml)
 
 Simphotonics Dom (SD) nodes can be used to to create, edit, search, and output HTML nodes. The library contains classes that help with the creation of [navigators](#navigator), input elements, and HTML [tables](#table).
 
