@@ -6,8 +6,11 @@ vendor
 # PHPUnit cache directory
 .phpunit*
 
-# composer lock file
+# composer lock file (not req. for a library)
 composer.lock*
 
 # ide
 .idea*
+
+#.phpunit local data
+.phpunit*
