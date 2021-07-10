@@ -2,3 +2,4 @@
 
 - Requires php: ^8.0.8
 - Uses new syntax: named parameters.
+- Added github ci.
