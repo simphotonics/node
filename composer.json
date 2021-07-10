@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^8.0.8",
+        "php": "^8.0.0",
         "simphotonics/utils":"^2.0.0"
     },
     "require-dev": {
