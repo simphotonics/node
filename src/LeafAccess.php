@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2016 Simphotonics
  * Description: Includes basic access methods required by
  *              classes working with external nodes of
- *              type Simphotonics\Dom\Leaf.
+ *              type Simphotonics\Node\Leaf.
  */
 interface LeafAccess
 {

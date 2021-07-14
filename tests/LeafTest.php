@@ -1,23 +1,23 @@
 <?php
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Simphotonics\Dom\Leaf;
-use Simphotonics\Dom\Node;
+use Simphotonics\Node\Leaf;
+use Simphotonics\Node\Node;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2015 Simphotonics
- * Description: Tests methods of class \Simphotonics\Dom\Leaf.
+ * Description: Tests methods of class \Simphotonics\Node\Leaf.
  */
 
 class LeafTest extends TestCase
 {
     /**
      * Test instance of leaf
-     * @var Simphotonics\Dom\Leaf
+     * @var Simphotonics\Node\Leaf
      */
     private static $l;
 

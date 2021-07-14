@@ -1,14 +1,15 @@
 <?php
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
 use Simphotonics\Utils\ArrayUtils;
-use Simphotonics\Dom\NodeAccess;
+use Simphotonics\Node\NodeAccess;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2015 Simphotonics
- * Description: Simphotonics\Node is a dom-node.
+ * Description: Simphotonics\Node is a represents a node with
+ * a kind tag, an attributes array, and child nodes.
  */
 class Node extends Leaf implements \ArrayAccess, NodeAccess, \RecursiveIterator
 {

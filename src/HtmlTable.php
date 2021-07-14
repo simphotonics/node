@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\HtmlNode;
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\HtmlNode;
 
 use InvalidArgumentException;
 
@@ -256,9 +256,9 @@ class HtmlTable extends HtmlNode
             ++$nodeCount;
             // Check if input is of type htmlLeaf
             if ($chunk instanceof HtmlLeaf) {
-               $td_tmp->appendChild($chunk);
+                $td_tmp->appendChild($chunk);
             } else {
-               $td_tmp->appendChild($span)->setContent("$chunk");
+                $td_tmp->appendChild($span)->setContent("$chunk");
             }
 
             // Reset $colCount at end of table row.

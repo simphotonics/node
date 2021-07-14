@@ -1,12 +1,12 @@
 <?php
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\HtmlNode;
-use Simphotonics\Dom\HtmlNavigator;
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\HtmlNode;
+use Simphotonics\Node\HtmlNavigator;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -57,15 +57,16 @@ class HtmlNavigatorTest extends TestCase
         $B_services[0]->setAttributes(['href' => '/services'])
             ->setContent('SERVICES');
 
-        $Menu = new HtmlNode(kind:'ul',
+        $Menu = new HtmlNode(
+            kind: 'ul',
             attributes: ['id' => 'mainMenu'],
         );
 
         $Menu->append([$B_home, $B_services]);
         return new HtmlNavigator(
-            kind:'div',
-                attributes:['id' => 'nav', 'class' => 'has-shadow'],
-                childNodes:[$Menu]
+            kind: 'div',
+            attributes: ['id' => 'nav', 'class' => 'has-shadow'],
+            childNodes: [$Menu]
         );
     }
 }

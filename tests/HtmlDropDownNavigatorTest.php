@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\HtmlNode;
-use Simphotonics\Dom\HtmlDropDownNavigator;
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\HtmlNode;
+use Simphotonics\Node\HtmlDropDownNavigator;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -30,10 +30,10 @@ class HtmlDropDownNavigatorTest extends TestCase
 
     /**
      * Initialises the HtmlDropDownNavigator object.
-     * 
+     *
      * @method  initNavigator
      *
-     * @return  \Simphotonics\Dom\HtmlDropDownNavigator
+     * @return  \Simphotonics\Node\HtmlDropDownNavigator
      */
     private static function initDropDownNavigator(): HtmlDropDownNavigator
     {

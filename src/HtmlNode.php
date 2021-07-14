@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
-use Simphotonics\Dom\NodeAccess;
+use Simphotonics\Node\NodeAccess;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2015 Simphotonics
  * Description: Simphotonics\HtmlNode can be used to
  * represent internal and external nodes.
- * Extends: @see \Simphotonics\Dom\HtmlLeaf
+ * Extends: @see \Simphotonics\Node\HtmlLeaf
  *
  * Notation:
  * The element 'kind' denotes the element tag without the brackets.

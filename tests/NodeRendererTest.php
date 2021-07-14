@@ -1,17 +1,17 @@
 <?php
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\HtmlNode;
-use Simphotonics\Dom\Parser\NodeRenderer as Renderer;
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\HtmlNode;
+use Simphotonics\Node\Parser\NodeRenderer as Renderer;
 
 /**
  * @author    D Reschner <d.reschner@simphotonics.com>
  * @copyright 2016 Simphotonics
- * Description: Tests Simphotonics\Dom\NodeRenderer.
+ * Description: Tests Simphotonics\Node\NodeRenderer.
  */
 class NodeRendererTest extends TestCase
 {
@@ -32,7 +32,7 @@ class NodeRendererTest extends TestCase
       ]
     );
 
-    $expected = "\${$img->id()} = new \Simphotonics\Dom\HtmlLeaf(\n" .
+    $expected = "\${$img->id()} = new \Simphotonics\Node\HtmlLeaf(\n" .
       "  kind: 'img',\n" .
       "  attributes:   [\n" .
       "    'id' => 'img1',\n" .
@@ -64,7 +64,7 @@ class NodeRendererTest extends TestCase
         'id' => 'div1'
       ]
     );
-    $expected = "\${$div->id()} = new \Simphotonics\Dom\HtmlNode(\n" .
+    $expected = "\${$div->id()} = new \Simphotonics\Node\HtmlNode(\n" .
       "  kind: 'div',\n" .
       "  attributes:   [\n" .
       "    'id' => 'div1',\n" .
@@ -96,7 +96,7 @@ class NodeRendererTest extends TestCase
 
     $expected =
       "\n" .
-      "\${$img->id()} = new \Simphotonics\Dom\HtmlLeaf(\n" .
+      "\${$img->id()} = new \Simphotonics\Node\HtmlLeaf(\n" .
       "  kind: 'img',\n" .
       "  attributes:   [\n" .
       "    'id' => 'img1',\n" .
@@ -105,7 +105,7 @@ class NodeRendererTest extends TestCase
       "  ],\n" .
       "); \n" .
       "\n" .
-      "\${$div->id()} = new \Simphotonics\Dom\HtmlNode(\n" .
+      "\${$div->id()} = new \Simphotonics\Node\HtmlNode(\n" .
       "  kind: 'div',\n" .
       "  attributes:   [\n" .
       "    'id' => 'div1',\n" .

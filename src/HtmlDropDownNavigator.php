@@ -1,8 +1,8 @@
 <?php
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
-use Simphotonics\Dom\HtmlNavigator;
+use Simphotonics\Node\HtmlNavigator;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -14,7 +14,7 @@ use Simphotonics\Dom\HtmlNavigator;
  * entry containing an anchor with the current uri
  * is at the top.
  * Usage: See HtmlDropDownNavigatorTest.php located in
- * folder simphotonics/dom/tests.
+ * folder simphotonics/node/tests.
  */
 class HtmlDropDownNavigator extends HtmlNavigator
 {

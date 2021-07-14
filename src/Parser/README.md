@@ -1,20 +1,20 @@
-# Simphotonics Dom Parser
+# Simphotonics Node Parser
 
-Simphotonics Dom (SD) Parser contains classes that can be used to [parse data type definition files](#parse-dtd) in order to extract entities and elements, [parse HTML documents](#parse-html) to get the corresponding SD nodes, and [render SD nodes as PHP source code](#render-nodes).
+Simphotonics Node (SD) Parser contains classes that can be used to [parse data type definition files](#parse-dtd) in order to extract entities and elements, [parse HTML documents](#parse-html) to get the corresponding SD nodes, and [render SD nodes as PHP source code](#render-nodes).
 
 ## Installation
 
-From a terminal issue the command: 
+From a terminal issue the command:
 ```json
-composer require simphotonics/dom 
+composer require simphotonics/node
 ```
 
-Alternatively, add simphotonics/dom to the list of required libraries in your composer.json file:
+Alternatively, add simphotonics/node to the list of required libraries in your composer.json file:
 
 ```json
 {
     "require": {
-        "simphotonics/dom": ">=1.0.0"
+        "simphotonics/node": ">=1.0.0"
     }
 }
 ```
@@ -74,7 +74,7 @@ title and an optional base element in any order -->
 To access the entities and elements defined in *xhtml.dtd*, we use a DtdParser object:
 ```php
 <?php
-use Simphotonics\Dom\Parser\DtdParser;
+use Simphotonics\Node\Parser\DtdParser;
 
 // A string containing the DTD can be passed directly to the constructor.
 //$p = new DtdParser($dtd);
@@ -137,7 +137,7 @@ $attrLists = [
             content     CDATA          #REQUIRED
             scheme      CDATA          #IMPLIED'
 ];
-``` 
+```
 Note that references to entities have been replaced by the entity value. Since DtdParser parses the DTD string only once, top to bottom, entities have to be defined before they are used.
 
 
@@ -150,92 +150,92 @@ For the following example I am assuming that the file *sample-site.html* contain
 <!DOCTYPE html>
 <html xml:lang="en" lang="en">
     <head id="head">
-        <meta http-equiv="Content-Type" content="text/html" charset="utf-8" /> 
-        <title>Sample Site - Home</title> 
-        <link rel="shortcut icon" href="http://www.samplesite.com/favicon.ico" /> 
-        <!-- This is a comment --> 
+        <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+        <title>Sample Site - Home</title>
+        <link rel="shortcut icon" href="http://www.samplesite.com/favicon.ico" />
+        <!-- This is a comment -->
         <link rel="stylesheet" type="text/css" href="/style/Home.css" media="all" />
-    </head> 
+    </head>
     <body id="body">
         <div id="root">
             <div id="column1">
-                <h1 class="larger has-white-shadow">HOME</h1> 
+                <h1 class="larger has-white-shadow">HOME</h1>
                 <div id="main1">
                     <p id="limitations">
                         This text is picked up by the parser!
-                        <span class="emph has-white-shadow"> 
-                            Welcome to the Sample Site 
-                        </span>, 
+                        <span class="emph has-white-shadow">
+                            Welcome to the Sample Site
+                        </span>,
                         This text is omitted by the parser!
                         <a href="http://www.sample-site.com.com">www.samplesite.com</a>.
-                    </p> 
+                    </p>
                 </div>
-            </div> 
-            <div id="column2"> 
-                <div id="main2"> 
+            </div>
+            <div id="column2">
+                <div id="main2">
                 <img src="img/sample-site.jpeg" id="img1" alt="Image Sample Site" />
-                </div> 
-            </div> 
+                </div>
+            </div>
             <div class="clear">
-            </div> 
+            </div>
             <div id="footer">
             </div>
         </div>
     </body>
 </html>
 ```
-To parse the file *sample-site.html* use: 
+To parse the file *sample-site.html* use:
 ```php
 <?php
-use Simphotonics\Dom\Parser\HtmlParser;
+use Simphotonics\Node\Parser\HtmlParser;
 
 $p = new HtmlParser();
 $p->loadHtml('sample-site.html');
 
-// Get the 'top' nodes of the document: 
+// Get the 'top' nodes of the document:
 $nodes = $p->getNodes();
 
 $p->exportNodes('parsed-nodes.php');
 ```
-The file *parsed-nodes.php* now contains PHP source code that replicates the nodes extracted while parsing *sample-site.html*. External nodes (leaves) are exported first and appended to their parent node. In this example, the top nodes required to render the HTML document are $doctype160 and $html161. Variable names are obtained by concatenating the element *kind* and an internal ID counter to ensure each name is unique.  
+The file *parsed-nodes.php* now contains PHP source code that replicates the nodes extracted while parsing *sample-site.html*. External nodes (leaves) are exported first and appended to their parent node. In this example, the top nodes required to render the HTML document are $doctype160 and $html161. Variable names are obtained by concatenating the element *kind* and an internal ID counter to ensure each name is unique.
 
-Limitations: HtmlParser only processes pure text content (within non-empty HTML elements) encountered before the first child node. This is illustrated in the paragraph with *id="limitations"* in the example above. 
+Limitations: HtmlParser only processes pure text content (within non-empty HTML elements) encountered before the first child node. This is illustrated in the paragraph with *id="limitations"* in the example above.
 
 ```php
 <?php
-$doctype160 = new \Simphotonics\Dom\HtmlLeaf([
+$doctype160 = new \Simphotonics\Node\HtmlLeaf([
   'kind' => '!DOCTYPE',
   'cont' => 'html'
-]); 
+]);
 
-$meta163 = new \Simphotonics\Dom\HtmlLeaf([
+$meta163 = new \Simphotonics\Node\HtmlLeaf([
   'kind' => 'meta',
   'attr'=> [
     'http-equiv' => 'Content-Type',
     'content' => 'text/html',
     'charset' => 'utf-8'
   ],
-]); 
+]);
 
-$title164 = new \Simphotonics\Dom\HtmlNode([
+$title164 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'title',
   'cont' => 'Sample Site - Home'
-]); 
+]);
 
-$link165 = new \Simphotonics\Dom\HtmlLeaf([
+$link165 = new \Simphotonics\Node\HtmlLeaf([
   'kind' => 'link',
   'attr'=> [
     'rel' => 'shortcut',
     'href' => 'http://www.samplesite.com/favicon.ico'
   ],
-]); 
+]);
 
-$comment166 = new \Simphotonics\Dom\HtmlLeaf([
+$comment166 = new \Simphotonics\Node\HtmlLeaf([
   'kind' => '!--',
   'cont' => 'This is a comment'
-]); 
+]);
 
-$link167 = new \Simphotonics\Dom\HtmlLeaf([
+$link167 = new \Simphotonics\Node\HtmlLeaf([
   'kind' => 'link',
   'attr'=> [
     'rel' => 'stylesheet',
@@ -243,9 +243,9 @@ $link167 = new \Simphotonics\Dom\HtmlLeaf([
     'href' => '/style/Home.css',
     'media' => 'all'
   ],
-]); 
+]);
 
-$head162 = new \Simphotonics\Dom\HtmlNode([
+$head162 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'head',
   'attr'=> [
     'id' => 'head'
@@ -257,42 +257,42 @@ $head162 = new \Simphotonics\Dom\HtmlNode([
     $comment166,
     $link167
   ]
-]); 
+]);
 
-$h1171 = new \Simphotonics\Dom\HtmlNode([
+$h1171 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'h1',
   'attr'=> [
     'class' => 'larger'
   ],,
   'cont' => 'HOME'
-]); 
+]);
 
-$span174 = new \Simphotonics\Dom\HtmlNode([
+$span174 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'span',
   'attr'=> [
     'class' => 'emph'
   ],,
   'cont' => 'Welcome to the Sample Site'
-]); 
+]);
 
-$a175 = new \Simphotonics\Dom\HtmlNode([
+$a175 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'a',
   'attr'=> [
     'href' => 'http://www.samplesite.com'
   ],,
   'cont' => 'www.samplesite.com'
-]); 
+]);
 
-$p173 = new \Simphotonics\Dom\HtmlNode([
+$p173 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'p'
   'child'=> [
     $span174,
     $a175
   ],
   'cont' => 'This text is picked up by the parser!'
-]); 
+]);
 
-$div172 = new \Simphotonics\Dom\HtmlNode([
+$div172 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'div',
   'attr'=> [
     'id' => 'main1'
@@ -300,9 +300,9 @@ $div172 = new \Simphotonics\Dom\HtmlNode([
   'child'=> [
     $p173
   ]
-]); 
+]);
 
-$div170 = new \Simphotonics\Dom\HtmlNode([
+$div170 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'div',
   'attr'=> [
     'id' => 'column1'
@@ -311,18 +311,18 @@ $div170 = new \Simphotonics\Dom\HtmlNode([
     $h1171,
     $div172
   ]
-]); 
+]);
 
-$img178 = new \Simphotonics\Dom\HtmlLeaf([
+$img178 = new \Simphotonics\Node\HtmlLeaf([
   'kind' => 'img',
   'attr'=> [
     'src' => 'img/sampleSite.jpeg',
     'id' => 'img1',
     'alt' => 'Image'
   ],
-]); 
+]);
 
-$div177 = new \Simphotonics\Dom\HtmlNode([
+$div177 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'div',
   'attr'=> [
     'id' => 'main2'
@@ -330,9 +330,9 @@ $div177 = new \Simphotonics\Dom\HtmlNode([
   'child'=> [
     $img178
   ]
-]); 
+]);
 
-$div176 = new \Simphotonics\Dom\HtmlNode([
+$div176 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'div',
   'attr'=> [
     'id' => 'column2'
@@ -340,23 +340,23 @@ $div176 = new \Simphotonics\Dom\HtmlNode([
   'child'=> [
     $div177
   ]
-]); 
+]);
 
-$div179 = new \Simphotonics\Dom\HtmlNode([
+$div179 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'div',
   'attr'=> [
     'class' => 'clear'
   ],
-]); 
+]);
 
-$div180 = new \Simphotonics\Dom\HtmlNode([
+$div180 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'div',
   'attr'=> [
     'id' => 'footer'
   ],
-]); 
+]);
 
-$div169 = new \Simphotonics\Dom\HtmlNode([
+$div169 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'div',
   'attr'=> [
     'id' => 'root'
@@ -367,9 +367,9 @@ $div169 = new \Simphotonics\Dom\HtmlNode([
     $div179,
     $div180
   ]
-]); 
+]);
 
-$body168 = new \Simphotonics\Dom\HtmlNode([
+$body168 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'body',
   'attr'=> [
     'id' => 'body'
@@ -377,9 +377,9 @@ $body168 = new \Simphotonics\Dom\HtmlNode([
   'child'=> [
     $div169
   ]
-]); 
+]);
 
-$html161 = new \Simphotonics\Dom\HtmlNode([
+$html161 = new \Simphotonics\Node\HtmlNode([
   'kind' => 'html',
   'attr'=> [
     'xml:lang' => 'en',
@@ -389,16 +389,16 @@ $html161 = new \Simphotonics\Dom\HtmlNode([
     $head162,
     $body168
   ]
-]); 
+]);
 ```
 <a id="render-nodes"/>
 ## Rendering Nodes As PHP Source Code - NodeRenderer
-To store and reuse SD nodes it is at times useful to render them as PHP source code. 
-One example includes the storage of nodes obtained by parsing an HTML document (see previous section). 
+To store and reuse SD nodes it is at times useful to render them as PHP source code.
+One example includes the storage of nodes obtained by parsing an HTML document (see previous section).
 ```php
 <?php
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\Parser\NodeRenderer;
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\Parser\NodeRenderer;
 
 $myLink = new HtmlLeaf([
   'kind' => 'link',
@@ -408,7 +408,7 @@ $myLink = new HtmlLeaf([
     'href' => '/style/Home.css',
     'media' => 'all'
   ],
-]); 
+]);
 
 $p = new HtmlNode([
     'kind' => 'p',
@@ -426,7 +426,7 @@ $source = $r->renderRecursive($p);
 ```
 The variable *$linkSource* now contains a string enclosed by single quotes. All internal quotes are escaped.
 ```php
-'$link167 = new \Simphotonics\Dom\HtmlLeaf([
+'$link167 = new \Simphotonics\Node\HtmlLeaf([
   \'kind\' => \'link\',
   \'attr\'=> [
     \'rel\' => \'stylesheet\',
@@ -434,11 +434,11 @@ The variable *$linkSource* now contains a string enclosed by single quotes. All 
     \'href\' => \'/style/Home.css\',
     \'media\' => \'all\'
   ],
-]);' 
-``` 
+]);'
+```
 The variable *$source* contains the string:
 ```php
-'$link167 = new \Simphotonics\Dom\HtmlLeaf([
+'$link167 = new \Simphotonics\Node\HtmlLeaf([
   \'kind\' => \'link\',
   \'attr\'=> [
     \'rel\' => \'stylesheet\',
@@ -446,13 +446,10 @@ The variable *$source* contains the string:
     \'href\' => \'/style/Home.css\',
     \'media\' => \'all\'
   ],
-]); 
+]);
 
-$p168 = new \Simphotonics\Dom\HtmlNode([
+$p168 = new \Simphotonics\Node\HtmlNode([
     \'kind\' => \'p\',
     \'child\'=> [$link167]
 ]);'
 ```
-
-
-

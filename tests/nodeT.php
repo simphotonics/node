@@ -2,11 +2,11 @@
 
 include('../vendor/autoload.php');
 
-use Simphotonics\Dom\Node;
-use Simphotonics\Dom\HtmlTable;
-use Simphotonics\Dom\HtmlNode;
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\HtmlNavigator;
+use Simphotonics\Node\Node;
+use Simphotonics\Node\HtmlTable;
+use Simphotonics\Node\HtmlNode;
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\HtmlNavigator;
 
 
 
@@ -62,7 +62,7 @@ $n = new HtmlNode(
   content: 'node content',
   attributes: ['class' => 'main']
 );
-$n->appendChild(new HtmlNode(kind: 'p', attributes: ['id' => 'id89' ]));
+$n->appendChild(new HtmlNode(kind: 'p', attributes: ['id' => 'id89']));
 
 //print($n);
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
 use Simphotonics\Utils\ArrayUtils;
 use RecursiveIteratorIterator;

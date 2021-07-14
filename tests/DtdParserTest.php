@@ -1,9 +1,9 @@
 <?php
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Simphotonics\Dom\Parser\DtdParser;
+use Simphotonics\Node\Parser\DtdParser;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -92,7 +92,7 @@ class DtdParserTest extends TestCase
                           >';
   /**
    * Parser instance
-   * @var  Simphotonics\Dom\Parser\DtdParser
+   * @var  Simphotonics\Node\Parser\DtdParser
    */
   private static $p;
 

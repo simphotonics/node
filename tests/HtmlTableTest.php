@@ -1,11 +1,11 @@
 <?php
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\HtmlTable;
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\HtmlTable;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -31,11 +31,11 @@ class HtmlTableTest extends TestCase
     public function testConstructor()
     {
         $table = new HtmlTable(inputData: array_slice(self::$data, 0, 4));
-        $this->assertEquals('<table><tr><th class="col1"><span>'.
-        'Data1</span></th><th class="col2"><span>'.
-        'Data2</span></th></tr><tr><td class="col1"><span>'.
-        'Data3</span></td><td class="col2"><span>'.
-        'Data4</span></td></tr></table>', "$table");
+        $this->assertEquals('<table><tr><th class="col1"><span>' .
+            'Data1</span></th><th class="col2"><span>' .
+            'Data2</span></th></tr><tr><td class="col1"><span>' .
+            'Data3</span></td><td class="col2"><span>' .
+            'Data4</span></td></tr></table>', "$table");
     }
 
     public function testSetRowAlt()

@@ -1,25 +1,26 @@
-# Simphotonics Dom
-[![PHP Composer](https://github.com/simphotonics/dom/actions/workflows/php.yml/badge.svg)](https://github.com/simphotonics/dom/actions/workflows/php.yml)
+# Simphotonics Node
+[![PHP Composer](https://github.com/simphotonics/node/actions/workflows/php.yml/badge.svg)](https://github.com/simphotonics/node/actions/workflows/php.yml)
 
-Simphotonics Dom (SD) nodes can be used to to create, edit, search, and output HTML nodes. The library contains classes that help with the creation of [navigators](#navigator), input elements, and HTML [tables](#table).
+Simphotonics nodes can be used to to create, edit, search, and output HTML nodes. The library contains classes that help with the creation of [navigators](#navigator), input elements, and HTML [tables](#table).
 
-SD nodes make composing HTML documents easier by removing the need for structured text and enabling reuse of HTML nodes. Most web sites use a fixed page layout that is then filled with the page content: text, anchors, images, etc. The section [web page template](#web-page-template) shows how to use SD nodes to create a simple two column empty web page prototype.
+Node make composing HTML documents easier by removing the need for structured text and enabling reuse of HTML nodes. Most web sites use a fixed page layout that is then filled with the page content: text, anchors, images, etc. The section [web page template](#web-page-template) shows how to use SD nodes to create a simple two column empty web page prototype.
 
-Simphotonics Dom also includes a rudimentary HTML parser, a DTD parser, and a Node Renderer. For more information visit [https://github.com/simphotonics/dom/tree/master/src/Parser](https://github.com/simphotonics/dom/tree/master/src/Parser).
+Simphotonics Node also includes a rudimentary HTML parser, a DTD parser, and a Node Renderer.
+For more information visit [https://github.com/simphotonics/node/tree/master/src/Parser](https://github.com/simphotonics/node/tree/master/src/Parser).
 
 ## Installation
 
 From a terminal issue the command:
 ```json
-composer require simphotonics/dom
+composer require simphotonics/node
 ```
 
-Alternatively, add simphotonics/dom to the list of required libraries in your `composer.json` file:
+Alternatively, add simphotonics/node to the list of required libraries in your `composer.json` file:
 
 ```json
 {
     "require": {
-        "simphotonics/dom": ">=1.0.0"
+        "simphotonics/node": ">=1.0.0"
     }
 }
 ```
@@ -28,8 +29,8 @@ Alternatively, add simphotonics/dom to the list of required libraries in your `c
 To create SD nodes, an array with optional entries *kind, attr, cont, and child* is passed to the constructor:
 ```php
 <?php
-use Simphotonics\Dom\HtmlNode;
-use Simphotonics\Dom\HtmlLeaf;
+use Simphotonics\Node\HtmlNode;
+use Simphotonics\Node\HtmlLeaf;
 
 $img = new HtmlLeaf([
     'kind' => 'img',
@@ -76,10 +77,10 @@ The statement above returns the following string (whitespace has been added to h
 The following example shows how to quickly generate a simple web page layout using SD nodes. It can be used as a prototype empty HTML document that is later filled with actual web page content.
 
 ```php
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\HtmlNode;
-use Simphotonics\Dom\HtmlCssLink;
-use Simphotonics\Dom\HtmlTitle;
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\HtmlNode;
+use Simphotonics\Node\HtmlCssLink;
+use Simphotonics\Node\HtmlTitle;
 
 // DTD
 $dtd = new HtmlLeaf([
@@ -277,7 +278,7 @@ the styling of the class `li.here` that will highlight the navigator button poin
 The class `HtmlTable` can be used to create and manipulate HTML tables. The usage is demonstrated below:
 ```php
 <?php
-use Simphotonics\Dom\HtmlTable;
+use Simphotonics\Node\HtmlTable;
 
 \\ Table data
 for ($i=1; $i < 9; $i++) {

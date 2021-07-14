@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Simphotonics\Dom;
+declare(strict_types=1);
 
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\HtmlNode;
+namespace Simphotonics\Node;
+
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\HtmlNode;
 
 /**
  * author D Reschner <d.reschner@simphotonics.com>
@@ -63,10 +65,10 @@ class HtmlCheckBox extends HtmlLeaf
     ) {
         $out = [];
         $span = new HtmlNode(kind: 'span');
-        $br = new HtmlLeaf(kind:'br');
+        $br = new HtmlLeaf(kind: 'br');
 
         foreach ($input as $name => $value) {
-            $box = new \Simphotonics\Dom\HtmlCheckBox($name, $value);
+            $box = new \Simphotonics\Node\HtmlCheckBox($name, $value);
             $out[] = clone $span;
             end($out)->appendChild($box);
             if ($lineBreak) {

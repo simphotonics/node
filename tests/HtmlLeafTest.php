@@ -1,10 +1,10 @@
 <?php
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Simphotonics\Dom\HtmlLeaf;
+use Simphotonics\Node\HtmlLeaf;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
-use Simphotonics\Dom\LeafAccess;
+use Simphotonics\Node\LeafAccess;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -314,7 +314,7 @@ class Leaf implements LeafAccess
      * Since leaf is an external node this function
      * always returns false.
      * It is used in trait:
-     * Simphotonics\Dom\NodeMethods::recursion.
+     * Simphotonics\Node\NodeMethods::recursion.
      *
      * @return boolean
      */

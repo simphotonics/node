@@ -1,8 +1,8 @@
 <?php
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
-use Simphotonics\Dom\HtmlLeaf;
+use Simphotonics\Node\HtmlLeaf;
 use Simphotonics\Utils\WebUtils;
 
 /**

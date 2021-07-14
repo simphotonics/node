@@ -1,8 +1,8 @@
 <?php
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
-use Simphotonics\Dom\HtmlNode;
+use Simphotonics\Node\HtmlNode;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>

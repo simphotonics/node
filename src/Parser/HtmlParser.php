@@ -1,17 +1,17 @@
 <?php
 
-namespace Simphotonics\Dom\Parser;
+namespace Simphotonics\Node\Parser;
 
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\HtmlNode;
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\HtmlNode;
 use Simphotonics\Utils\FileUtils;
-use Simphotonics\Dom\NodeAccess;
+use Simphotonics\Node\NodeAccess;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
  * @copyright 2016 Simphotonics
  * Description: Parses HTML source code and attempts
- * to extract an array of Simphotonics\Dom nodes.
+ * to extract an array of Simphotonics\Node nodes.
  */
 
 class HtmlParser
@@ -146,24 +146,24 @@ class HtmlParser
                     // DOCTYPE node
                 case '!>':
                     $nodes[] = new HtmlLeaf(
-                        kind:'!DOCTYPE',
+                        kind: '!DOCTYPE',
                         content: trim($match['attr'])
                     );
                     break;
                     // COMMENT node
                 case '-->':
                     $nodes[] = new HtmlLeaf(
-                        kind:$match['kind'],
-                        content:trim($match['attr'])
+                        kind: $match['kind'],
+                        content: trim($match['attr'])
                     );
                     break;
                     // BLOCK node
                     // Note: Calls parseNodes recursively
                 default:
                     $nodes[] = new HtmlNode(
-                        kind:$match['kind'],
+                        kind: $match['kind'],
                         attributes: self::attributes($match['attr']),
-                        content:trim($match['text'])
+                        content: trim($match['text'])
                     );
                     if (strlen(trim($match['childNodes']))) {
                         $childNodes = $this->parseNodes($match['childNodes']);

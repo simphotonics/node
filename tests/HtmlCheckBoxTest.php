@@ -1,12 +1,12 @@
 <?php
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Simphotonics\Dom\HtmlCheckBox;
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\HtmlNode;
+use Simphotonics\Node\HtmlCheckBox;
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\HtmlNode;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>

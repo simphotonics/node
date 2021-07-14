@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom\Parser;
+namespace Simphotonics\Node\Parser;
 
-use Simphotonics\Dom\Parser\DtdLeaf;
+use Simphotonics\Node\Parser\DtdLeaf;
 use Simphotonics\Utils\FileUtils;
-use Simphotonics\Dom\NodeAccess;
+use Simphotonics\Node\NodeAccess;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -108,7 +108,7 @@ class DtdParser
      * to file.
      * @method  exportNodes
      * @param   string       $filename  Path to file on file system.
-     * 
+     *
      * @return  int               Number of bits writen. Throws on failure.
      */
     public function exportNodes($filename = 'dtdNodes.php'): int
@@ -160,7 +160,7 @@ class DtdParser
      * nodes.
      * @method  getElementNodes
      * @return  array           Array containing nodes of type
-     *                                Simphotonics\Dom\Parser\DtdLeaf.
+     *                                Simphotonics\Node\Parser\DtdLeaf.
      */
     public function getElementNodes()
     {

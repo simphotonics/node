@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Simphotonics\Dom\Node;
+use Simphotonics\Node\Node;
 
 use function PHPUnit\Framework\assertEquals;
 

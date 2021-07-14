@@ -1,10 +1,10 @@
 <?php
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Simphotonics\Dom\HtmlCssLink;
+use Simphotonics\Node\HtmlCssLink;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -79,8 +79,8 @@ class HtmlCssLinkTest extends TestCase
     {
         $cssLink = new HtmlCssLink('about-us');
         $cssLink->setCssFolder('cssFolder');
-        $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\"".
-        " href=\"cssFolder/about-us.css\" media=\"all\"/>", "$cssLink");
+        $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\"" .
+            " href=\"cssFolder/about-us.css\" media=\"all\"/>", "$cssLink");
     }
 
     /**
@@ -92,7 +92,7 @@ class HtmlCssLinkTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = $uri;
         $cssLink = new HtmlCssLink();
-        $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\"".
-        " href=\"$expectedPath\" media=\"all\"/>", "$cssLink");
+        $this->assertEquals("<link rel=\"stylesheet\" type=\"text/css\"" .
+            " href=\"$expectedPath\" media=\"all\"/>", "$cssLink");
     }
 }

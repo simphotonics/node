@@ -1,10 +1,10 @@
 <?php
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Simphotonics\Dom\HtmlSelect;
+use Simphotonics\Node\HtmlSelect;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -28,8 +28,8 @@ class HtmlSelectTest extends TestCase
             defaultOption: 'GB'
         );
         $this->assertEquals(
-            '<select name="country" id="country">'.
-                '<option value="GB" selected="selected">Great Britain</option>'.
+            '<select name="country" id="country">' .
+                '<option value="GB" selected="selected">Great Britain</option>' .
                 '<option value="USA">United States of America</option></select>',
             $select . ''
         );

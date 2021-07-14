@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
 use Simphotonics\Utils\FileUtils;
 use InvalidArgumentException;
 
 /**
-  * Description: Simphotonics\HtmlLeaf is an external node (leaf),
+ * Description: Simphotonics\HtmlLeaf is an external node (leaf),
  * and can be used for XHTML elements like br, img, span,
  * etc. that do not have child nodes.
  *

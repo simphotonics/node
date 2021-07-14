@@ -1,9 +1,9 @@
 <?php
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
-use Simphotonics\Dom\HtmlLeaf;
-use Simphotonics\Dom\HtmlNode;
+use Simphotonics\Node\HtmlLeaf;
+use Simphotonics\Node\HtmlNode;
 use Simphotonics\Utils\ArrayUtils;
 
 /**

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom;
+namespace Simphotonics\Node;
 
-use Simphotonics\Dom\HtmlNode;
+use Simphotonics\Node\HtmlNode;
 
 /**
  * Description: Simphotonics\HtmlNavigator is an external node
@@ -15,13 +15,13 @@ use Simphotonics\Dom\HtmlNode;
  * The element (typically of kind 'li') can then be styled using CSS to
  * highlight the current position.
  * For a working example see: HtmlNavigatorTest.php
- * located in the folder dom\tests.
+ * located in the folder node\tests.
  */
 class HtmlNavigator extends HtmlNode
 {
     /**
      * Anchor pointing to the current uri.
-     * @var  Simphotonics\Dom\HtmlLeaf|null
+     * @var  Simphotonics\Node\HtmlLeaf|null
      */
     protected HtmlLeaf|HtmlNode|null $selfAnchor = null;
 
@@ -55,7 +55,7 @@ class HtmlNavigator extends HtmlNode
      *
      * @method  extendAttributes
      *
-     * @return  Simphotonics\Dom\HtmlLeaf|null  Returns the anchor node
+     * @return  Simphotonics\Node\HtmlLeaf|null  Returns the anchor node
      *                                          pointing to the
      *                                          current uri.
      *                                          Null is returned if no such

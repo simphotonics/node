@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom\Tests;
+namespace Simphotonics\Node\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Simphotonics\Dom\HtmlNode;
+use Simphotonics\Node\HtmlNode;
 
 /**
  * @author D Reschner <d.reschner@simphotonics.com>
@@ -17,19 +17,19 @@ class HtmlNodeTest extends TestCase
 {
     /**
      * Test instance of HtmlNode.
-     * @var Simphotonics\Dom\HtmlNode
+     * @var Simphotonics\Node\HtmlNode
      */
     private static $n;
 
     /**
      * Test instance of HtmlNode.
-     * @var Simphotonics\Dom\HtmlNode
+     * @var Simphotonics\Node\HtmlNode
      */
     private static $n0;
 
     /**
      * Test instance of HtmlNode.
-     * @var Simphotonics\Dom\HtmlNode
+     * @var Simphotonics\Node\HtmlNode
      */
     private static $n1;
 

@@ -2,9 +2,16 @@
     "name": "simphotonics/node",
     "type": "library",
     "description": "Create, edit, output XML nodes and documents.",
-    "keywords": ["dom", "ml", "markup", "node", "tree", "xhtml"],
+    "keywords": [
+        "xml",
+        "ml",
+        "markup",
+        "node",
+        "tree",
+        "xhtml"
+    ],
     "license": "MIT",
-    "homepage": "http://github.com/simphotonics/dom",
+    "homepage": "http://github.com/simphotonics/node",
     "support": {
         "issues": "https://github.com/simphotonics/node/issues",
         "source": "https://github.com/simphotonics/node"
@@ -17,7 +24,7 @@
     ],
     "require": {
         "php": "^8.0.0",
-        "simphotonics/utils":"^2.0.0"
+        "simphotonics/utils": "^2.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0"

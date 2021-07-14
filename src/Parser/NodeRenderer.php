@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Simphotonics\Dom\Parser;
+namespace Simphotonics\Node\Parser;
 
 // Simphotonics\Utils\ArrayUtils;
-use Simphotonics\Dom\Leaf;
-use Simphotonics\Dom\Node;
-use Simphotonics\Dom\NodeAccess;
+use Simphotonics\Node\Leaf;
+use Simphotonics\Node\Node;
+use Simphotonics\Node\NodeAccess;
 
 /**
- * Description: Used to render Simphotonics\Dom\Leaf and
- * Simphotonics\Dom\Node objects as php source code.
+ * Description: Used to render Simphotonics\Node\Leaf and
+ * Simphotonics\Node\Node objects as php source code.
  * Usage:
  * 1) NodeRenderer::render($node) generates the source code
  *    used to create $node.
@@ -24,7 +24,7 @@ class NodeRenderer
     public function __toString(): string
     {
         return "Object of type " . __CLASS__ .
-            "used to render Simphotonics\Dom nodes as PHP source code.";
+            "used to render Simphotonics\Node nodes as PHP source code.";
     }
 
     /**

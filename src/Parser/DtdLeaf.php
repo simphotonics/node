@@ -1,8 +1,8 @@
 <?php
 
-namespace Simphotonics\Dom\Parser;
+namespace Simphotonics\Node\Parser;
 
-use Simphotonics\Dom\Leaf;
+use Simphotonics\Node\Leaf;
 
 
 /**
@@ -31,12 +31,14 @@ class DtdLeaf extends Leaf
      * Constructs object
      * @param Array|array $input
      */
-    public function __construct(string $name = '', string $kind = 'default',
-    array $attributes = [], string $content = '',  )
-    {
+    public function __construct(
+        string $name = '',
+        string $kind = 'default',
+        array $attributes = [],
+        string $content = '',
+    ) {
         parent::__construct($kind, $attributes, $content);
-            $this->name = $name;
-
+        $this->name = $name;
     }
 
     // /**
