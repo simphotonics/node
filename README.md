@@ -3,7 +3,7 @@
 
 Simphotonics nodes can be used to to create, edit, search, and output HTML nodes. The library contains classes that help with the creation of [navigators](#navigator), input elements, and HTML [tables](#table).
 
-Node make composing HTML documents easier by removing the need for structured text and enabling reuse of HTML nodes. Most web sites use a fixed page layout that is then filled with the page content: text, anchors, images, etc. The section [web page template](#web-page-template) shows how to use SD nodes to create a simple two column empty web page prototype.
+Node make composing HTML documents easier by removing the need for structured text and enabling reuse of HTML nodes. Most web sites use a fixed page layout that is then filled with the page content: text, anchors, images, etc. The section [web page template](#web-page-template) shows how to use nodes to create a simple two column empty web page prototype.
 
 Simphotonics Node also includes a rudimentary HTML parser, a DTD parser, and a Node Renderer.
 For more information visit [https://github.com/simphotonics/node/tree/master/src/Parser](https://github.com/simphotonics/node/tree/master/src/Parser).
@@ -26,21 +26,21 @@ Alternatively, add simphotonics/node to the list of required libraries in your `
 ```
 
 ## Usage
-To create SD nodes, an array with optional entries *kind, attr, cont, and child* is passed to the constructor:
+To create nodes, an array with optional entries *kind, attr, content, and childNodes is passed to the constructor:
 ```php
 <?php
 use Simphotonics\Node\HtmlNode;
 use Simphotonics\Node\HtmlLeaf;
 
-$img = new HtmlLeaf([
-    'kind' => 'img',
+$img = new HtmlLeaf(
+    kind:  'img',
     // Element attributes are specified in array format!
-    'attr' => [
+    attributes:  [
         'id' => 'logo',
         'src' => 'assets/images/logo.jpg',
         'alt' => 'Logo'
     ]
-]);
+);
 
 // All input array entries are optional. If no element kind is specified it defaults to div.
 $div = new HtmlNode();
@@ -48,16 +48,16 @@ $div = new HtmlNode();
 // Attributes and content can be added later.
 $div->setAttr(['id' => 'demo-div'])->setCont('Text within the div element.');
 
-$p = new HtmlNode([
-    'kind' => 'p',
-    'attr' => [
+$p = new HtmlNode(
+    kind:  'p',
+    attributes:  [
         'class' => 'demo-paragraph'
     ],
     // The (string) content of an element.
-    'cont' => 'This is the paragraph text.',
+    content:  'This is the paragraph text.',
     // An array of child nodes.
-    'child' => [$img,$div]
-]);
+    childNodes:  [$img,$div]
+);
 ```
 Note that the element **kind** refers to the HTML element *tag name*. The HTML paragraph in the example above is of kind *p*, whereas the HTML image is of kind *img*. To render the nodes in the example above, we use:
 ```php
@@ -74,7 +74,7 @@ The statement above returns the following string (whitespace has been added to h
 <a name="web-page-template"></a>
 ## Web Page Template
 
-The following example shows how to quickly generate a simple web page layout using SD nodes. It can be used as a prototype empty HTML document that is later filled with actual web page content.
+The following example shows how to quickly generate a simple web page layout using nodes. It can be used as a prototype empty HTML document that is later filled with actual web page content.
 
 ```php
 use Simphotonics\Node\HtmlLeaf;
@@ -83,41 +83,41 @@ use Simphotonics\Node\HtmlCssLink;
 use Simphotonics\Node\HtmlTitle;
 
 // DTD
-$dtd = new HtmlLeaf([
-    'kind' => '!DOCTYPE',
-    'cont' => 'html'
-]);
+$dtd = new HtmlLeaf(
+    kind:  '!DOCTYPE',
+    content:  'html'
+);
 
 // HTML document
-$doc = new HtmlNode([
-    'kind' => 'html',
-    'attr' => [
+$doc = new HtmlNode(
+    kind:  'html',
+    attributes:  [
         'xml:lang' => "en-GB",
         'lang' => "en-GB"
     ]
-]);
+);
 
 // Web page title
 // The title is set dynamically depending on the current URI.
 // Example: www.samplesite.com/about-us => Title: My Site - About Us
 $title = new HtmlTitle('My Site');
 
-$encoding = new HtmlLeaf([
-    'kind' => 'meta',
-    'attr' => [
+$encoding = new HtmlLeaf(
+    kind:  'meta',
+    attributes:  [
         'http-equiv' => 'Content-Type',
         'content' => 'text/html',
         'charset'=>'utf-8'
     ]
-]);
+);
 
-$icon = new HtmlLeaf([
-    'kind' => 'link',
-    'attr' => [
+$icon = new HtmlLeaf(
+    kind:  'link',
+    attributes:  [
         'rel' => 'shortcut icon',
         'href' => asset('favicon.ico')
     ]
-]);
+);
 
 // The input path tells the class HtmlCssLink that style files are located in '/style'.
 // If the current URI is www.samplesite.com/about-us,
@@ -125,31 +125,31 @@ $icon = new HtmlLeaf([
 $css = new HtmlCssLink('/style');
 
 // Head
-$head = new HtmlNode([
-  'kind' => 'head',
-  'attr' => ['id' => 'head'],
-  'child' => [$encoding, $title, $icon, $css]
-  ]);
+$head = new HtmlNode(
+  kind:  'head',
+  attributes:  ['id' => 'head'],
+  childNodes:  [$encoding, $title, $icon, $css]
+  );
 
-$body = new HtmlNode([
-    'kind' => 'body',
-    'attr' => ['id' => 'body']
-]);
+$body = new HtmlNode(
+    kind:  'body',
+    attributes:  ['id' => 'body']
+);
 
 // We are using a two column layout.
-$col1 = new HtmlNode([
-    'kind' => 'div',
-    'attr' => ['id' => 'col1']
-]);
+$col1 = new HtmlNode(
+    kind:  'div',
+    attributes:  ['id' => 'col1']
+);
 
 // This demonstrates cloning of nodes.
 $col2 = clone $col1;
 $col2->setAttr(['id' => 'col2']);
 
-$footer = new HtmlNode([
-    'kind' => 'div',
-    'attr' => ['id' => 'footer']
-]);
+$footer = new HtmlNode(
+    kind:  'div',
+    attributes:  ['id' => 'footer']
+);
 
 // Compose emtpy template
 $body->append([$col1,$col2,$footer]);
@@ -165,19 +165,19 @@ We now use the empty document layout to create the page `AboutUs.php`. If you ar
 require 'layouts/emptyDocument.php';
 
 // Compose content
-$info = new HtmlLeaf([
-    'kind' => 'p',
-    'cont' => 'Information about www.samplesite.com.'
-]);
+$info = new HtmlLeaf(
+    kind:  'p',
+    content:  'Information about www.samplesite.com.'
+);
 
-$imgAboutUs = new HtmlLeaf([
-    'kind' => 'img',
-    'attr' => [
+$imgAboutUs = new HtmlLeaf(
+    kind:  'img',
+    attributes:  [
         'id' => 'img-about-us',
         'src' => 'assets/images/aboutUs.jpg',
         'alt' => 'About Us'
     ]
-]);
+);
 
 // Add content to the empty document
 
@@ -206,15 +206,15 @@ A web page navigator typically consists of an unordered list where the list item
 ```php
 <?php
 // Anchor template
-$a = new HtmlLeaf([
-'kind' => 'a'
-]);
+$a = new HtmlLeaf(
+kind:  'a'
+);
 
 // Navigator button template
-$b = new HtmlNode([
-'kind' => 'li',
-'child' => [$a]
-]);
+$b = new HtmlNode(
+kind:  'li',
+childNodes:  [$a]
+);
 
 // Create entry for home
 $b_home = clone $b;
@@ -224,17 +224,17 @@ $b_home[0]->setAttr(['href' => '/'])->setCont('HOME');
 $b_services = clone $b;
 $b_services[0]->setAttr(['href' => '/services'])->setCont('SERVICES');
 
-$menu = new HtmlNode([
-'kind' => 'ul',
-'attr' => ['id' => 'mainMenu'],
+$menu = new HtmlNode(
+kind:  'ul',
+attributes:  ['id' => 'mainMenu'],
 'child'=> [$b_home, $b_services]
-]);
+);
 
-$nav =  new HtmlNavigator([
-'kind' => 'div',
-'attr' => ['id' => 'nav','class' => 'has-shadow'],
-'child' => [$menu]
-]);
+$nav =  new HtmlNavigator(
+kind:  'div',
+attributes:  ['id' => 'nav','class' => 'has-shadow'],
+childNodes:  [$menu]
+);
 ```
 Let's assume that the current relative uri is */services*, then rendering $nav from within PHP yields the string:
 ```html
@@ -286,7 +286,7 @@ for ($i=1; $i < 9; $i++) {
 }
 \\ Construct table
 $table = new HtmlTable(
-    $data,   // Input data (could also be SD nodes)
+    $data,   // Input data (could also be nodes)
     3,       // Set table layout to 3 columns
     HtmlTable::SET_TABLE_HEADERS, // Enable table headers
     2,       // Each 2nd row will have the style attribute class="alt"
@@ -315,7 +315,7 @@ The code above will render the following html table:
 </table>
 
 Alternative rows can be styled using the CSS class *alt*.
-Table input other than SD nodes are wrapped in an SD node of kind *span*.
+Table input other than nodes are wrapped in an node of kind *span*.
 The HTML source code is shown below:
 ```html
 <table>
